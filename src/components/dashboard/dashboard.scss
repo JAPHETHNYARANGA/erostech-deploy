@@ -1,0 +1,21 @@
+.body{
+  .top, .bottom{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+}
+.pie-chart,
+.polar-chart {
+  flex: 1;
+  max-width: 20%;
+}
+.line-chart {
+  
+  flex: 1;
+  min-width: 20%;
+}
+
+
+
+
