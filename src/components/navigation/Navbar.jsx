@@ -28,8 +28,14 @@ function Navbar() {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('/member_details');
-      dispatch(update(response.data)); 
+      // Retrieve user data from local storage
+      const userData = localStorage.getItem('user');
+      console.log('User Data:', userData);
+      if (userData) {
+        const user = JSON.parse(userData);
+        // Update user data in Redux state
+        dispatch(update(user));
+      }
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -40,41 +46,7 @@ function Navbar() {
   }, [dispatch]);
 
 
-  const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1OTVlZDMzMC05MTIzLTQ1MzItODk2Yi0xZjNlNmQwYzEwMDAiLCJzdWIiOiIzOCIsInNjcCI6InVzZXIiLCJhdWQiOm51bGwsImlhdCI6MTcwMjMxMTE1NywiZXhwIjoxNzAyMzE4MzU3fQ.G10EyAteluOuf6gCd6FxaXo-AdbPHG-PplLYxykFjqE'; 
-localStorage.setItem('accessToken', accessToken);
 
-// const accessToken = localStorage.getItem('accessToken');
-
-// Define the handleSignOut function using the accessToken variable
-const handleSignout = async () => {
-  try {
-    if (!accessToken) {
-      console.error('Access token not found.');
-      return; // Exit function if accessToken is not available
-    }
-
-    // Make a DELETE request to the sign-out endpoint on your server
-    const response = await fetch('/users/sign_out', {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-        // Add other headers if necessary
-      }
-    });
-
-    if (response.ok) {
-      // Clear the access token from localStorage on successful sign-out
-      localStorage.removeItem('accessToken');
-      return { success: true, message: 'Sign-out successful.' };
-    } else {
-      throw new Error('Sign-out failed.');
-    }
-
-  } catch (error) {
-    return { success: false, message: 'Sign-out failed. Please try again.' };
-  }
-};
 
 
 const handleSignOutClick = async () => {
@@ -154,40 +126,15 @@ const handleSignOutClick = async () => {
                     aria-labelledby="user-dropdown"
                   >
                     <div className="px-4 py-3" role="none">
-                      <p className="text-sm text-gray-900 dark:text-white" role="none">
-                        {user?.name || 'Loading...'} 
-                      </p>
+                      {/* <p className="text-sm text-gray-900 dark:text-white" role="none">
+                        {user?.firstName || 'Loading...'} 
+                      </p> */}
                       <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                         {user?.email || 'Loading...'} 
                       </p>
                     </div>
                     <ul className="py-1" role="none">
-                    <li>
-              <Link
-                to="/dashboard" 
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                role="menuitem">
-                Dashboard
-              </Link>
-            </li>
-                      <Link to="/settings"><li>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                          role="menuitem"
-                        >
-                          Settings
-                        </a>
-                      </li></Link>
-                      <li>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                          role="menuitem"
-                        >
-                          Earnings
-                        </a>
-                      </li>
+                    
                       <li>
 
                       <Link to="/">

@@ -12,6 +12,11 @@ function Users() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [deleteshow, deletesetShow] = useState(false);
+  const deletehandleClose = () => deletesetShow(false);
+  const deletehandleShow = () => deletesetShow(true);
+  const [deleteUserId, setDeleteUserId] = useState(null);
+
   const [alertVariant, setAlertVariant] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
@@ -85,9 +90,24 @@ function Users() {
       });
   };
 
-  const deleteUser = (id) =>{
-    console.log("iser id is" + id)
-  }
+  const deleteUser = async (id) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/user/${id}`);
+      if (response.status === 200) {
+        // Update the user list after successful deletion
+        fetchUsers();
+        deletehandleClose()
+      } else {
+       
+        
+        deletehandleClose()
+      }
+    } catch (error) {
+     
+      console.log("delete failed" + error)
+      deletehandleClose()
+    }
+  };
 
     const getRoleText = (roleValue) => {
       switch (roleValue) {
@@ -115,6 +135,28 @@ function Users() {
           </Alert>
         )}
    
+   
+        <Modal show={deleteshow} onHide={deletehandleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Delete</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to delete this user?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className=" bg-gray-500 text-white py-2 rounded-lg hover:bg-blue-600" onClick={deletehandleClose}>
+              Cancel
+            </Button>
+            <Button className="bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600" onClick={() => deleteUser(deleteUserId)}>
+              Delete
+            </Button>
+
+          </Modal.Footer>
+        </Modal>
+        <h3>Users</h3>
+       
+
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add User</Modal.Title>
@@ -202,7 +244,7 @@ function Users() {
               <td>{user.email}</td>
               <td>{getRoleText(user.role)}</td>
               <td>
-                <i className="fa fa-trash" aria-hidden="true" onClick={() => deleteUser(user.id)}></i>
+                <i className="fa fa-trash" aria-hidden="true" onClick={() => { deletehandleShow(); setDeleteUserId(user.id); }}></i>
               </td>
             </tr>
           ))}

@@ -27,6 +27,8 @@ const Login = () => {
 
       if (response.data.success) {
         Cookies.set('token', response.data.token);
+        const user = response.data.user;
+        localStorage.setItem('user', JSON.stringify(user));
         setAlertVariant('success');
         setAlertMessage('Login success!');
         setShowAlert(true);
