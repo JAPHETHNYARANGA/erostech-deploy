@@ -111,6 +111,18 @@ function ProfomaInvoice() {
                 required />
             </div>
 
+
+            <div className="mb-4">
+            <label for="cars" className="block font-medium mb-1">Currency</label>
+            <select className="w-full border rounded-lg py-2 px-3" name="cars" id="cars">
+              <option value="volvo">USD</option>
+              <option value="saab">KSH</option>
+              <option value="opel">POUNDS</option>
+              <option value="audi">YEN</option>
+            </select>
+            </div>
+            
+
             <h2 className='mb-3'>Items</h2>
 
             {items.map((item, index) => (
