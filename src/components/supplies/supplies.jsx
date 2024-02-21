@@ -30,12 +30,18 @@ const Supplies = () => {
     setFileName(selectedFile ? selectedFile.name : '');
   };
 
+  const token = Cookies.get('token');
+
   useEffect(() => {
     fetchSupplies();
   }, []);
 
   const fetchSupplies = () =>{
-    fetch(`${BASE_URL}/getSupplies`)
+    fetch(`${BASE_URL}/getSupplies`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
     .then((response) => response.json())
     .then((data) => {
       console.log("supplies is ", data.supplies);
@@ -55,7 +61,8 @@ const Supplies = () => {
   
         const response = await axios.post(`${BASE_URL}/supplies`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
           }
         });
 

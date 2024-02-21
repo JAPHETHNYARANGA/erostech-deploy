@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { BASE_URL } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; 
 
 
 function FinalInvoice() {
@@ -16,6 +17,8 @@ function FinalInvoice() {
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false); 
     const [items, setItems] = useState([{ itemName: '', quantity: '', amount: '' }]);
+
+    const token = Cookies.get('token');
 
     const handleAddItem = () => {
       setItems([...items, { itemName: '', quantity: '', amount: '' }]);
@@ -33,9 +36,10 @@ function FinalInvoice() {
       event.preventDefault();
       setLoading(true);
       try {
-        console.log(items)
           // Include the items array in the request payload
-          const response = await axios.post(`${BASE_URL}/generateInvoice`, {
+          const response = await axios.post(
+            `${BASE_URL}/generateInvoice`,
+            {
               receiverName: receiverName,
               receiverCompany: receiverCompany,
               receiverAddress: receiverAddress,
@@ -43,8 +47,13 @@ function FinalInvoice() {
               recipient_email: receiverEmail,
               dueDate: dueDate,
               items: items // Pass the entire items array
-          });
-  
+            },
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );  
           // Handle the response from the server
           if(response.data.success){
               navigate('/invoices');  

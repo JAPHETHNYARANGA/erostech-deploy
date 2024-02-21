@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Modal, Button } from "react-bootstrap";
 import axios from 'axios';
 import { BASE_URL } from '../constants/constants';
+import Cookies from 'js-cookie'; 
 
 
 function Users() {
@@ -28,6 +29,8 @@ function Users() {
 
   const [allUsers, getAllUsers] = useState([]);
 
+  const token = Cookies.get('token');
+
   useEffect(() => {
     fetchUsers();
    }, []);
@@ -40,7 +43,12 @@ function Users() {
       const response = await axios.post(`${BASE_URL}/createUser`, {
         email: email,
         role: role,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
+      
 
       // Assuming the response contains a token or user data
       if(response.data.status){
@@ -80,7 +88,11 @@ function Users() {
   };
 
   const fetchUsers = () => {
-    fetch(`${BASE_URL}/get-users`)
+    fetch(`${BASE_URL}/get-users`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((response) => response.json())
       .then((data) => {
         getAllUsers(data.user || []);
@@ -92,7 +104,11 @@ function Users() {
 
   const deleteUser = async (id) => {
     try {
-      const response = await axios.delete(`${BASE_URL}/user/${id}`);
+      const response = await axios.delete(`${BASE_URL}/user/${id}`,{
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (response.status === 200) {
         // Update the user list after successful deletion
         fetchUsers();

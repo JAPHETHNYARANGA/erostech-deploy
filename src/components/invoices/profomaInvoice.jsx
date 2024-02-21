@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { BASE_URL } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 
 function ProfomaInvoice() {
@@ -15,6 +16,8 @@ function ProfomaInvoice() {
     const [quantity, setQuantity] = useState('');
     const [amount, setAmount] = useState('');
     const [items, setItems] = useState([{ itemName: '', quantity: '', amount: '' }]);
+
+    const token = Cookies.get('token');
 
     const handleAddItem = () => {
       setItems([...items, { itemName: '', quantity: '', amount: '' }]);
@@ -40,19 +43,18 @@ function ProfomaInvoice() {
             recipient_email: receiverEmail,
             dueDate: dueDate,
             items: items // Pass the entire items array
-        });
-    
-          // Assuming the response contains a token or user data
-          console.log(response.data);
+          }, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
           if(response.data.success){
             navigate('/invoices'); 
           }else{
             setAlertVariant('danger');
             setAlertMessage('Failed to login!');
           }
-    
-          // Redirect or handle success based on the response
-          // navigate('/dashboard'); 
         } catch (error) {
           console.error('Login failed:', error.message);
       

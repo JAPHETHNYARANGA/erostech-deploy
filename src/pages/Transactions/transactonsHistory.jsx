@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BASE_URL } from '../../components/constants/constants';
+import Cookies from 'js-cookie'; 
 
 const TransactonsHistory = () => {
   const [transactions, setTransactions] = useState([]);
   const [depotMap, setDepotMap] = useState({});
+
+  const token = Cookies.get('token');
 
   useEffect(() => {
     fetchTransactions();
@@ -11,7 +14,11 @@ const TransactonsHistory = () => {
   }, []);
 
   const fetchTransactions = () =>{
-    fetch(`${BASE_URL}/fuelMovements`)
+    fetch(`${BASE_URL}/fuelMovements`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
     .then((response) => response.json())
     .then((data) => {
       setTransactions(data.fuelMovement || []);
@@ -20,7 +27,11 @@ const TransactonsHistory = () => {
   }
 
   const fetchDepo = () =>{
-    fetch(`${BASE_URL}/fuelDepots`)
+    fetch(`${BASE_URL}/fuelDepots`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
     .then((response) => response.json())
     .then((data) => {
       const depotNameMap = {};

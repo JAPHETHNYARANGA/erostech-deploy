@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie'; 
 import '../styles/depots.scss';
 import { Modal, Button } from "react-bootstrap";
 import { BASE_URL } from './constants/constants';
@@ -15,6 +15,8 @@ const Depots = () => {
   const [allBalances, setAllBalances] = useState([]);
   const [fuelTypes, setFuelTypes] = useState([]);
   const [loading, setLoading] = useState(false); // State to track loading state
+
+  const token = Cookies.get('token');
 
 
   //fuel Balance logic
@@ -37,8 +39,13 @@ const Depots = () => {
       const response = await axios.post(`${BASE_URL}/createBalance`, {
         depo_id: balance_depo_id,
         fuel_type: balance_fuel_type,
-        quantity :balance_fuel_quantity
+        quantity: balance_fuel_quantity,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
+      
 
       // Assuming the response contains a token or user data
      
@@ -92,14 +99,19 @@ const Depots = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${BASE_URL}/fuelMovements`, {
-        entry_no : entryNumber,
+        entry_no: entryNumber,
         depo_id: movement_depo_id,
         fuel_type: movement_fuel_type,
-        entry_date:entryDate,
-        entry:entry,
-        vessel:vessel,
-        quantity :movementQuantity
+        entry_date: entryDate,
+        entry: entry,
+        vessel: vessel,
+        quantity: movementQuantity,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
+      
 
      
       if(response.data.success){
@@ -148,20 +160,37 @@ const Depots = () => {
     fetchDepots();
     fetchFuelTypes();
     fetchBalances();
+    console.log("token is" + token)
    }, []);
    
 
-   const fetchDepots = () =>{
-    fetch(`${BASE_URL}/fuelDepots`)
-    .then((response) => response.json())
-    .then((data) => {
-      setStations(data.station);
+   const fetchDepots = () => {
+    fetch(`${BASE_URL}/fuelDepots`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     })
-    .catch((error) => console.error('Error fetching stations:', error));
-   }
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setStations(data.station);
+      })
+      .catch((error) => {
+        console.error('Error fetching stations:', error);
+      });
+  }
+  
    
    const fetchFuelTypes = () =>{
-    fetch(`${BASE_URL}/fuelTypes`)
+    fetch(`${BASE_URL}/fuelTypes`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
     .then((response) => response.json())
     .then((data) => {
       setFuelTypes(data.fuel);
@@ -171,7 +200,11 @@ const Depots = () => {
    }
 
    const fetchBalances = () =>{
-    fetch(`${BASE_URL}/fetchBalances`)
+    fetch(`${BASE_URL}/fetchBalances`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
     .then((response) => response.json())
     .then((data) => {
       setAllBalances(data.balance );
@@ -199,6 +232,7 @@ const Depots = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(data),
     })

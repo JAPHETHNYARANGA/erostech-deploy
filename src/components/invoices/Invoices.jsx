@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
+import Cookies from 'js-cookie';
 
 function Invoices() {
   const [invoices, setInvoices] = useState([]);
@@ -18,12 +19,18 @@ function Invoices() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const token = Cookies.get('token');
+
   useEffect(() => {
     fetchInvoices();
   }, []);
 
   const fetchInvoices = () => {
-    axios.get(`${BASE_URL}/fetchInvoices`)
+    axios.get(`${BASE_URL}/fetchInvoices`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then(response => {
         setInvoices(response.data.invoice || []);
       })

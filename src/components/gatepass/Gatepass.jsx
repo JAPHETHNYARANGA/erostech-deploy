@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import Alert from 'react-bootstrap/Alert';
+import Cookies from 'js-cookie'; 
 
 const GatePassForm = () => {
   const [selectedDepot, setSelectedDepot] = useState('');
@@ -24,6 +25,7 @@ const GatePassForm = () => {
   const [alertVariant, setAlertVariant] = useState(null);
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const token = Cookies.get('token');
 
 
 
@@ -31,18 +33,25 @@ const GatePassForm = () => {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${BASE_URL}/createGatePass`, {
-        issueAt: issued_at,
-        issueBy: issued_by,
-        Depot: selectedDepot,
-        productType: product_type,
-        quantityLeaving: quantity_leaving,
-        destination: destination,
-        vehicleDetails: vehicle_details,
-        recipient_email: recipient_email
-
-       
-      });
+      const response = await axios.post(
+        `${BASE_URL}/createGatePass`,
+        {
+          issueAt: issued_at,
+          issueBy: issued_by,
+          Depot: selectedDepot,
+          productType: product_type,
+          quantityLeaving: quantity_leaving,
+          destination: destination,
+          vehicleDetails: vehicle_details,
+          recipient_email: recipient_email
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
 
       if (response.data.success) {
         
@@ -79,6 +88,9 @@ const GatePassForm = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("token is gate " + token)
+  }, []);
 
 
 

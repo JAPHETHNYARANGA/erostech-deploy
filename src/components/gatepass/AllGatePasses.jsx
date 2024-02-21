@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { BASE_URL } from '../constants/constants';
+import Cookies from 'js-cookie'; 
 
 const AllGatePasses = () => {
   const [gatePasses, setGatePasses] = useState([]);
   const [error, setError] = useState(null);
+
+  const token = Cookies.get('token');
 
   useEffect(() => {
     fetchGatePasses();
   }, []);
 
   const fetchGatePasses = () => {
-    fetch(`${BASE_URL}/fetchGatePass`)
+    fetch(`${BASE_URL}/fetchGatePass`,{
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((response) => response.json())
       .then((data) => {
         setGatePasses(data.gatePass);
