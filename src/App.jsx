@@ -236,8 +236,6 @@ const App = () => {
             }
           />
 
-
-
           {/* secondary pages */}
 
           <Route path="/fuel-balance"

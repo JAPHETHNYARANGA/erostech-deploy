@@ -3,100 +3,108 @@ import React from 'react';
 const Messages = ({ onEditItem, cellData }) => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-     <form >
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Issued At:</label>
-            <input
-              type="date"
-              // value={issued_at}
-              // onChange={(e) => setIssuedAt(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Issued By:</label>
-            <input
-              type="text"
-              // value={issued_by}
-              // onChange={(e) => setIssuedBy(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Recipient Email:</label>
-            <input
-              type="text"
-              // value={recipient_email}
-              // onChange={(e) => setRecipientEmail(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Depot:</label>
-            <input
-              type="text"
-              // value={selectedDepot}
-              // onChange={(e) => setSelectedDepot(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Product Type:</label>
-            <input
-              type="text"
-              // value={product_type}
-              // onChange={(e) => setProduct_type(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Quantity Leaving:</label>
-            <input
-              type="number"
-              // value={quantity_leaving}/
-              // onChange={(e) => setQuantity_leaving(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Destination:</label>
-            <input
-              type="text"
-              // value={destination}
-              // onChange={(e) => setDestination(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Vehicle Details:</label>
-            <input
-              type="text"
-              // value={vehicle_details}
-              // onChange={(e) => setVehicle_details(e.target.value)}
-              className="border border-gray-300 rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
-              required
-            />
-          </div>
-          <div className="buttons">
-      
-               
+    
+    <form >
+            <div className="mb-4">
+              <p className='center'>Generate LPO</p>
+            <label htmlFor="email" className="block font-medium mb-1">Receiver Name</label>
+            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" 
+            // value={receiverName}
+              // onChange={(e) => setReceiverName(e.target.value)}
+              required  />
+            </div>
+            <div className="mb-4">
+            <label htmlFor="email" className="block font-medium mb-1">Receiver Company</label>
+            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3"  
+            // value={receiverCompany}
+              // onChange={(e) => setReceiverCompany(e.target.value)}
+              required/>
+            </div>
+            <div className="mb-4">
+            <label htmlFor="email" className="block font-medium mb-1">Receiver Address</label>
+            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3"  
+            // value={receiverAddress}
+              // onChange={(e) => setReceiverAddress(e.target.value)}
+              required/>
+            </div>
+            <div className="mb-4">
+            <label htmlFor="email" className="block font-medium mb-1">Receiver Phone</label>
+            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" 
+            // value={receiverPhone}
+              // onChange={(e) => setReceiverPhone(e.target.value)}
+              required />
+            </div>
+            <div className="mb-4">
+            <label htmlFor="email" className="block font-medium mb-1">Receiver Email</label>
+            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" 
+            // value={receiverEmail}
+              // onChange={(e) => setReceiverEmail(e.target.value)}
+              required />
+            </div>
+            <div className="mb-3">
+            <label htmlFor="email" className="block font-medium mb-1">Invoice Due Date</label>
+            <input type="date" id="name" className="w-full border rounded-lg py-2 px-3" 
+            // value={dueDate}
+              // onChange={(e) => setDueDate(e.target.value)}
+              required />
+            </div>
+
+            <h2 className='mb-3'>Items</h2>
+
+            
+              <div className="row items" >
+                <div className="mb-4 col">
+                  <label htmlFor="email" className="block font-medium mb-1">Item Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="w-full border rounded-lg py-2 px-3"
+                    // value={item.itemName}
+                    // onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-4 col">
+                  <label htmlFor="password" className="block font-medium mb-1">Quantity</label>
+                  <input
+                    type="number"
+                    id="quantity"
+                    className="w-full border rounded-lg py-2 px-3"
+                    // value={item.quantity}
+                    // onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-4 col">
+                  <label htmlFor="number" className="block font-medium mb-1">Cost per Litre</label>
+                  <input
+                    type="number"
+                    id="amount"
+                    className="w-full border rounded-lg py-2 px-3"
+                    // value={item.amount}
+                    // onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              
+
+                <button className='btn btn-primary mb-2' >
+                  <i className="fa fa-plus" aria-hidden="true"></i>
+                </button>
+
+                <button className='btn btn-primary mb-2 ml-2'>
+                  <i className="fa-solid fa-minus"></i>
+                </button>
+
+            
                   <button
                     type="submit"
-                    className="bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                    className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
                   >
-                    Generate Gate Pass
-                  </button>
+                    Create
+              </button>
                 
-
-          </div>
-         
         </form>
     </div>
   );
