@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import Alert from 'react-bootstrap/Alert';
 import { Modal } from 'react-bootstrap';
+import Paginator from '../Paginator/paginator';
 
 const Supplies = () => {
   const navigate = useNavigate();
@@ -134,6 +135,7 @@ const Supplies = () => {
             </tr>
           ))}
         </tbody>
+        <Paginator />
       </table>
     
       <Modal show={show} onHide={handleClose}>

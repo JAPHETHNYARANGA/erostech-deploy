@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BASE_URL } from '../../components/constants/constants';
 import Cookies from 'js-cookie'; 
+import Paginator from '../../components/Paginator/paginator';
 
 const TransactonsHistory = () => {
   const [transactions, setTransactions] = useState([]);
@@ -87,6 +88,7 @@ const TransactonsHistory = () => {
             </tr>
           ))}
         </tbody>
+        <Paginator />
       </table>
     </div>
   );

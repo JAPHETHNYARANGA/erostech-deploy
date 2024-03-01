@@ -7,6 +7,11 @@ function Sidebar() {
   const [isEcommerceDropdownOpen, setIsEcommerceDropdownOpen] = useState(false);
   const [isDocumentDropdownOpen, setIsDocumentDropdownOpen ] = useState(false);
 
+  const [selectedLink, setSelectedLink] = useState(null); // State to track the selected link
+
+  const handleLinkClick = (link) => {
+    setSelectedLink(link);
+  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -57,7 +62,8 @@ function Sidebar() {
         aria-label="Sidebar">
         <div className="h-full px-3 py-4 overflow-y-auto">
           <ul className="space-y-2 font-medium">
-            <Link to="/dashboard"><li>
+            <Link to="/dashboard">
+              <li>
               <a
                 href="#"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">

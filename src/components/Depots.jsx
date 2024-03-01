@@ -312,7 +312,7 @@ const Depots = () => {
     })}
 
     </tbody>
-
+    
       </table>
 
       <Modal show={show} onHide={handleClose}>

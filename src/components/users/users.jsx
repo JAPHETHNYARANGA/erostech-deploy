@@ -6,6 +6,7 @@ import { Modal, Button } from "react-bootstrap";
 import axios from 'axios';
 import { BASE_URL } from '../constants/constants';
 import Cookies from 'js-cookie'; 
+import Paginator from '../Paginator/paginator';
 
 
 function Users() {
@@ -265,6 +266,7 @@ function Users() {
             </tr>
           ))}
         </tbody>
+        <Paginator />
       </table>
       </div>
       

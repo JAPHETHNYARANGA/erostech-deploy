@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import Cookies from 'js-cookie';
+import Paginator from '../Paginator/paginator';
 
 function Invoices() {
   const [invoices, setInvoices] = useState([]);
@@ -32,10 +33,31 @@ function Invoices() {
       }
     })
       .then(response => {
+        
         setInvoices(response.data.invoice || []);
       })
       .catch(error => console.error('Error fetching invoices:', error));
   };
+
+  const fetchInvoiceFile = (id) => {
+    axios.post(`${BASE_URL}/fetchInvoiceFile/${id}`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      responseType: 'blob' // Set the responseType to 'blob' to handle binary data
+    })
+    .then(response => {
+      // Create a Blob from the PDF data
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      // Create a URL for the Blob
+      const url = window.URL.createObjectURL(blob);
+      // Open the PDF file in a new tab
+      window.open(url);
+    })
+    .catch(error => console.error('Error fetching invoices:', error));
+  };
+  
+  
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -93,6 +115,9 @@ function Invoices() {
             <th scope="col" className="p-4">
               Due Date
             </th>
+            <th scope="col" className="p-4">
+              View
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -102,9 +127,13 @@ function Invoices() {
               <td className="p-4">{invoice.ReceiverCompany}</td>
               <td className="p-4">{invoice.invoiceDate}</td>
               <td className="p-4">{invoice.dueDate}</td>
+              <td className="p-4" 
+              onClick={() => fetchInvoiceFile(invoice.id)}
+              ><i class="fa fa-eye" aria-hidden="true"></i></td>
             </tr>
           ))}
         </tbody>
+        <Paginator />
       </table>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
