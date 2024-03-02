@@ -30,7 +30,6 @@ function Navbar() {
     try {
       // Retrieve user data from local storage
       const userData = localStorage.getItem('user');
-      console.log('User Data:', userData);
       if (userData) {
         const user = JSON.parse(userData);
         // Update user data in Redux state

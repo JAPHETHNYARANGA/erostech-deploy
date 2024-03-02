@@ -1,30 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { BASE_URL } from '../constants/constants';
 import Cookies from 'js-cookie'; 
+import Paginator from '../Paginator/paginator';
 
 const AllGatePasses = () => {
   const [gatePasses, setGatePasses] = useState([]);
   const [error, setError] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
   const token = Cookies.get('token');
 
   useEffect(() => {
     fetchGatePasses();
-  }, []);
+  }, [currentPage]);
 
   const fetchGatePasses = () => {
-    fetch(`${BASE_URL}/fetchGatePass`,{
+    fetch(`${BASE_URL}/fetchGatePass?page=${currentPage}`,{
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
       .then((response) => response.json())
       .then((data) => {
-        setGatePasses(data.gatePass);
+        console.log("gate pass is", data);
+        setGatePasses(data.gatePass.data); // Access the 'data' array
+        setCurrentPage(data.gatePass.current_page); 
+        setLastPage(data.gatePass.last_page);
       })
+      
       .catch((error) => {
         setError('Error fetching gate pass. Please try again.');
       });
+  };
+
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -48,6 +61,7 @@ const AllGatePasses = () => {
             </div>
           </div>
         ))}
+        <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
       </div>
       {error && <p className="text-red-600 mt-4">{error}</p>}
     </div>

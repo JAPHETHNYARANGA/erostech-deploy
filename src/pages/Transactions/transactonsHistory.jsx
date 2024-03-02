@@ -3,29 +3,33 @@ import { BASE_URL } from '../../components/constants/constants';
 import Cookies from 'js-cookie'; 
 import Paginator from '../../components/Paginator/paginator';
 
-const TransactonsHistory = () => {
+const TransactionsHistory = () => {
   const [transactions, setTransactions] = useState([]);
   const [depotMap, setDepotMap] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
   const token = Cookies.get('token');
 
   useEffect(() => {
     fetchTransactions();
     fetchDepo();
-  }, []);
+  }, [currentPage]); // Refetch transactions when currentPage changes
 
-  const fetchTransactions = () =>{
-    fetch(`${BASE_URL}/fuelMovements`,{
+  const fetchTransactions = () => {
+    fetch(`${BASE_URL}/fuelMovements?page=${currentPage}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
-    .then((response) => response.json())
-    .then((data) => {
-      setTransactions(data.fuelMovement || []);
-    })
-    .catch((error) => console.error('Error fetching supplies:', error));
-  }
+      .then((response) => response.json())
+      .then((data) => {
+        setTransactions(data.fuelMovement.data || []);
+        setCurrentPage(data.fuelMovement.current_page);
+        setLastPage(data.fuelMovement.last_page);
+      })
+      .catch((error) => console.error('Error fetching supplies:', error));
+  };
 
   const fetchDepo = () =>{
     fetch(`${BASE_URL}/fuelDepots`,{
@@ -42,7 +46,11 @@ const TransactonsHistory = () => {
       setDepotMap(depotNameMap);
     })
     .catch((error) => console.error('Error fetching supplies:', error));
-  }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="relative overflow-x-auto shadow-md rounded-lg ml-64 mt-16">
@@ -88,10 +96,10 @@ const TransactonsHistory = () => {
             </tr>
           ))}
         </tbody>
-        <Paginator />
       </table>
+      <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
     </div>
   );
-}
+};
 
-export default TransactonsHistory;
+export default TransactionsHistory;

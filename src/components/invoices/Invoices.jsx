@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import Cookies from 'js-cookie';
 import Paginator from '../Paginator/paginator';
+import { data } from 'autoprefixer';
 
 function Invoices() {
   const [invoices, setInvoices] = useState([]);
@@ -13,28 +14,32 @@ function Invoices() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [warning, setWarning] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
   const token = Cookies.get('token');
 
   useEffect(() => {
     fetchInvoices();
-  }, []);
+  }, [currentPage]);
 
   const fetchInvoices = () => {
-    axios.get(`${BASE_URL}/fetchInvoices`,{
+    axios.get(`${BASE_URL}/fetchInvoices?page=${currentPage}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
       .then(response => {
-        
-        setInvoices(response.data.invoice || []);
+        const { invoice } = response.data;
+        setInvoices(invoice.data || []);
+        setCurrentPage(invoice.current_page); // Access the current_page property from invoice
+        setLastPage(invoice.last_page); // Access the last_page property from invoice
       })
       .catch(error => console.error('Error fetching invoices:', error));
   };
@@ -60,6 +65,10 @@ function Invoices() {
   
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="relative overflow-x-auto shadow-md rounded-lg ml-64 mt-16">
@@ -133,7 +142,7 @@ function Invoices() {
             </tr>
           ))}
         </tbody>
-        <Paginator />
+        <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
       </table>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

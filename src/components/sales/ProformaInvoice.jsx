@@ -16,19 +16,6 @@ const proformaInvoice = () => {
   const customerPhone = useSelector((state) => state.customer.phone);
   const customerEmail = useSelector((state) => state.customer.email);
   const customerCategory = useSelector((state) => state.customer.category);
-  // const [invoiceData, setInvoiceData] = useState({
-  //   invoiceNumber: '',
-  //   date: new Date(),
-  //   billingDate: new Date(),
-  //   dueDate: new Date(),
-  //   description: '',
-  //   unitPrice: '',
-  //   quantity: '',
-  //   total: '',
-  //   supplierName: '',
-  //   // customerEmail: '',
-  //   // customerPhone: '',
-  // });
 
   const dispatch = useDispatch();
   const invoiceData = useSelector((state) => state.supplier.invoiceData);

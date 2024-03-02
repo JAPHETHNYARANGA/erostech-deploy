@@ -13,6 +13,8 @@ function Users() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
   const [deleteshow, deletesetShow] = useState(false);
   const deletehandleClose = () => deletesetShow(false);
@@ -34,7 +36,7 @@ function Users() {
 
   useEffect(() => {
     fetchUsers();
-   }, []);
+   }, [currentPage]);
 
 
   const handleSubmit = async (event) => {
@@ -89,19 +91,30 @@ function Users() {
   };
 
   const fetchUsers = () => {
-    fetch(`${BASE_URL}/get-users`,{
+    fetch(`${BASE_URL}/get-users?page=${currentPage}`,{
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
-      .then((response) => response.json())
-      .then((data) => {
-        getAllUsers(data.user || []);
-      })
-      .catch((error) => {
-        setError('Error fetching users. Please try again.');
-      });
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("data is", data); // Check the structure of data returned from the server
+      getAllUsers(data.user.data || []); // Accessing 'data' array under 'user' object
+      setCurrentPage(data.user.current_page);
+      setLastPage(data.user.last_page);
+    })
+    .catch((error) => {
+      console.error('Error fetching users:', error);
+      // Handle the error, e.g., set an error state or display an error message
+    });
   };
+  
+  
 
   const deleteUser = async (id) => {
     try {
@@ -139,6 +152,10 @@ function Users() {
         default:
           return 'N/A';
       }
+    };
+
+    const handlePageChange = (page) => {
+      setCurrentPage(page);
     };
 
 
@@ -266,7 +283,7 @@ function Users() {
             </tr>
           ))}
         </tbody>
-        <Paginator />
+        <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
       </table>
       </div>
       

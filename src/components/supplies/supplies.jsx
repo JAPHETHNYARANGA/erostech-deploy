@@ -18,12 +18,12 @@ const Supplies = () => {
   const [loading, setLoading] = useState(false); // State to track loading state
 
   const [supplies, setSupplies] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = (fuelTypeId) => {
-    setShow(true);
-  };
+  const handleShow = () => setShow(true);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -35,37 +35,39 @@ const Supplies = () => {
 
   useEffect(() => {
     fetchSupplies();
-  }, []);
+  }, [currentPage]); // Fetch supplies when currentPage changes
 
   const fetchSupplies = () =>{
-    fetch(`${BASE_URL}/getSupplies`,{
+    axios.get(`${BASE_URL}/getSupplies?page=${currentPage}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("supplies is ", data.supplies);
-      setSupplies(data.supplies);
+    .then((response) => {
+      
+      setSupplies(response.data.supplies.data);
+      setCurrentPage(response.data.supplies.current_page);
+      setLastPage(response.data.supplies.last_page);
     })
     .catch((error) => console.error('Error fetching supplies:', error));
   }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-        const formData = new FormData(); // Create FormData object
-        formData.append('name', name);
-        formData.append('quantity', quantity);
-        formData.append('amount', amount);
-        formData.append('file', file); // Append file object
-  
-        const response = await axios.post(`${BASE_URL}/supplies`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-          }
-        });
+      const formData = new FormData(); // Create FormData object
+      formData.append('name', name);
+      formData.append('quantity', quantity);
+      formData.append('amount', amount);
+      formData.append('file', file); // Append file object
+
+      const response = await axios.post(`${BASE_URL}/supplies`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
       console.log(response.data);
       if(response.data.success){
@@ -75,28 +77,26 @@ const Supplies = () => {
         setFile('');
         setFileName('');
 
-        fetchSupplies()
-        handleClose()
-      }else{
-
+        fetchSupplies();
+        handleClose();
+      } else {
         setName('');
         setQuantity('');
         setAmount('');
         setFile('');
         setFileName('');
         
-        handleClose()
+        handleClose();
       }
     } catch (error) {
-
-        setName('');
-        setQuantity('');
-        setAmount('');
-        setFile('');
-        setFileName('');
-
-      handleClose()
-    }finally{
+      console.error('Error creating supply:', error);
+      setName('');
+      setQuantity('');
+      setAmount('');
+      setFile('');
+      setFileName('');
+      handleClose();
+    } finally {
       setLoading(false);
     }
   };
@@ -106,9 +106,13 @@ const Supplies = () => {
     window.open(`${BASE_URL}/receipts/${fileName}`, '_blank');
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="p-4 mt-10 ml-64 body">
-      <button onClick={() => handleShow()} className=" bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
+      <button onClick={handleShow} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
         Add Supply
       </button>
       
@@ -130,13 +134,14 @@ const Supplies = () => {
               <td>{supply.quantity}</td>
               <td>{supply.amount}</td>
               <td>
-                <button onClick={() => fetchFile(supply.file)}><i class="fa fa-eye" aria-hidden="true"></i></button>
+                <button onClick={() => fetchFile(supply.file)}><i className="fa fa-eye" aria-hidden="true"></i></button>
               </td>
             </tr>
           ))}
         </tbody>
-        <Paginator />
       </table>
+      
+      <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
     
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
