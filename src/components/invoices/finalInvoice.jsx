@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { BASE_URL } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie'; 
+import InfoDialog from '../Dialogs/infoDialog';
+import ErrorDialog from '../Dialogs/errorDialog';
 
 
 function FinalInvoice() {
@@ -19,6 +21,25 @@ function FinalInvoice() {
     const [items, setItems] = useState([{ itemName: '', quantity: '', amount: '' }]);
 
     const token = Cookies.get('token');
+
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+
+   // Function to show success dialog for 3 seconds
+    const showSuccessDialog = () => {
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000); // Hide after 3 seconds
+    };
+
+    // Function to show error dialog for 3 seconds
+    const showErrorDialog = () => {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000); // Hide after 3 seconds
+    };
 
     const handleAddItem = () => {
       setItems([...items, { itemName: '', quantity: '', amount: '' }]);
@@ -56,14 +77,15 @@ function FinalInvoice() {
           );  
           // Handle the response from the server
           if(response.data.success){
+              showSuccessDialog();
               navigate('/invoices');  
           } else {
               // Handle error message or status
-              setAlertVariant('danger');
-              setAlertMessage('Failed to create invoice!');
+              showErrorDialog();
           }
       } catch (error) {
           console.error('invoice creation failed:', error.message);
+          showErrorDialog();
       } finally {
           setLoading(false);
       }
@@ -81,6 +103,8 @@ function FinalInvoice() {
   return (
     <div className="p-4 mt-8 ml-64 body">
         <h3>Invoice</h3>
+        <InfoDialog  message={"success"} show={showSuccess} /> 
+        <ErrorDialog message={"something went wrong, please check your connection and try again"} show={showError} /> 
         <form onSubmit={handleSubmit}>
             <div className="mb-4">
             <label htmlFor="email" className="block font-medium mb-1">Receiver Name</label>

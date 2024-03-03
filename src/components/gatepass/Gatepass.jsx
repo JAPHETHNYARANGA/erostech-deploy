@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
-import Alert from 'react-bootstrap/Alert';
 import Cookies from 'js-cookie'; 
+import InfoDialog from '../Dialogs/infoDialog';
+import ErrorDialog from '../Dialogs/errorDialog';
 
 const GatePassForm = () => {
   const [selectedDepot, setSelectedDepot] = useState('');
@@ -12,19 +13,33 @@ const GatePassForm = () => {
   const [destination, setDestination] = useState('');
   const [vehicle_details, setVehicle_details] = useState('');
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
   const [user_id, setUser_id] = useState('');
   const [issued_at, setIssuedAt] = useState('');
   const [issued_by, setIssuedBy] = useState('');
-  const [warning, setWarning] = useState(null);
   const [recipient_email, setRecipientEmail] = useState('');
   const [loading, setLoading] = useState(false); // State to track loading state
 
   const navigate = useNavigate();
 
-  const [alertVariant, setAlertVariant] = useState(null);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+   // Function to show success dialog for 3 seconds
+    const showSuccessDialog = () => {
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000); // Hide after 3 seconds
+    };
+
+    // Function to show error dialog for 3 seconds
+    const showErrorDialog = () => {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 3000); // Hide after 3 seconds
+    };
+
   const token = Cookies.get('token');
 
 
@@ -55,23 +70,17 @@ const GatePassForm = () => {
 
       if (response.data.success) {
         
-        setAlertVariant('success');
-        setAlertMessage('Gatepass Created!');
+        showSuccessDialog();
         setShowAlert(true);
 
         
       } else {
 
-        setAlertVariant('danger');
-        setAlertMessage('Gatepass Creation Failed!');
-        setShowAlert(true);
+        showErrorDialog();
 
       }
     } catch (error) {
-      console.error('Login failed:', error.message);
-      setAlertVariant('danger');
-      setAlertMessage('Failed to create Gate pass!');
-      setShowAlert(true);
+      showErrorDialog();
 
 
     }finally{
@@ -100,21 +109,15 @@ const GatePassForm = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
+        
       
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-      {showAlert && (
-          <Alert variant={alertVariant} onClose={() => setShowAlert(false)} dismissible>
-            {alertMessage}
-          </Alert>
-        )}
+
+        <InfoDialog  message={"success"} show={showSuccess} /> 
+        <ErrorDialog message={"something went wrong, please check your connection and try again"} show={showError} /> 
       
         <h2 className="text-lg font-semibold mb-4 text-center">Gate Pass</h2>
-        {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
-        {warning && (
-        <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-lg">
-          {warning}
-        </div>
-      )}
+        
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Issued At:</label>

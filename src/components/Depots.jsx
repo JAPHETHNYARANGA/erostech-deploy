@@ -4,6 +4,8 @@ import '../styles/depots.scss';
 import { Modal, Button } from "react-bootstrap";
 import { BASE_URL } from './constants/constants';
 import Navbar from './navigation/Navbar';
+import InfoDialog from './Dialogs/infoDialog';
+import ErrorDialog from './Dialogs/errorDialog';
 import axios from 'axios';
 
 const Depots = () => {
@@ -15,6 +17,28 @@ const Depots = () => {
   const [allBalances, setAllBalances] = useState([]);
   const [fuelTypes, setFuelTypes] = useState([]);
   const [loading, setLoading] = useState(false); // State to track loading state
+
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+   // Function to show success dialog for 3 seconds
+   const showSuccessDialog = () => {
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000); // Hide after 3 seconds
+  };
+
+  // Function to show error dialog for 3 seconds
+  const showErrorDialog = () => {
+    setShowError(true);
+    setTimeout(() => {
+      setShowError(false);
+    }, 3000); // Hide after 3 seconds
+  };
+
+
+  
 
   const token = Cookies.get('token');
 
@@ -55,12 +79,16 @@ const Depots = () => {
         setBalanceQuantity('');
         setBalanceDepoId('');
         handleClose();
+
+        showSuccessDialog();
+        
       }else{
         setBalanceFuelType('');
         setBalanceQuantity('');
         setBalanceDepoId('');
 
         handleClose()
+        showErrorDialog();
       }
 
     } catch (error) {
@@ -69,6 +97,7 @@ const Depots = () => {
         setBalanceDepoId('');
 
         handleClose()
+        showErrorDialog();
     }finally{
       setLoading(false);
     }
@@ -87,6 +116,8 @@ const Depots = () => {
 
   const [MovementShow, setMovementShow] = useState(false);
   const handleMovementClose = () => setMovementShow(false);
+
+
 
   const handleMovementShow = (fuelTypeId) => {
     setMovementDepoId(fuelTypeId); 
@@ -123,6 +154,8 @@ const Depots = () => {
 
         fetchBalances()
         handleMovementClose()
+
+        showSuccessDialog();
       }else{
         setMovementDepoId('');
         setEntryNumber('');
@@ -132,7 +165,9 @@ const Depots = () => {
         setEntryDate('');
         setMovementFuelType('');
 
-        handleMovementClose()
+        handleMovementClose();
+
+        showErrorDialog();
       }
 
     } catch (error) {
@@ -144,7 +179,9 @@ const Depots = () => {
         setEntryDate('');
         setMovementFuelType('');
 
-        handleMovementClose()
+        handleMovementClose();
+
+        showErrorDialog();
   
     }finally{
       setLoading(false);
@@ -156,6 +193,7 @@ const Depots = () => {
     fetchDepots();
     fetchFuelTypes();
     fetchBalances();
+    
    }, []);
    
 
@@ -208,37 +246,6 @@ const Depots = () => {
     });
    }
 
-  const handleAdjustQuantity = (amount) => {
-    const currentQuantity =
-      stations[selectedStationIndex]?.products?.[productType] || 0;
-
-   
-    const newQuantity = Math.max(0, Math.floor(currentQuantity + amount));
-
-    const data = {
-      depo_id: stations[selectedStationIndex].id,
-      fuel_type: productType,
-      quantity: newQuantity,
-    };
-
-    fetch(`${BASE_URL}/createBalance`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('Create balance result:', result);
-      })
-      .catch((error) => {
-        setError('Error creating balance. Please try again.');
-      });
-
-    setError(null);
-  };
 
 
   
@@ -253,6 +260,8 @@ const Depots = () => {
    <>
    <Navbar />
    <div className="p-4 mt-8 ml-64 body">
+        <InfoDialog  message={"success"} show={showSuccess} /> 
+        <ErrorDialog message={"something went wrong, please check your connection and try again"} show={showError} /> 
       <h2 className="text-2xl font-bold mb-4 title">Stations</h2>
 
       <table class="table">

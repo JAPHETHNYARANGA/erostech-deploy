@@ -7,6 +7,8 @@ import axios from 'axios';
 import { BASE_URL } from '../constants/constants';
 import Cookies from 'js-cookie'; 
 import Paginator from '../Paginator/paginator';
+import InfoDialog from '../Dialogs/infoDialog';
+import ErrorDialog from '../Dialogs/errorDialog';
 
 
 function Users() {
@@ -31,6 +33,25 @@ function Users() {
   const [role, setRole] = useState('');
 
   const [allUsers, getAllUsers] = useState([]);
+
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+   // Function to show success dialog for 3 seconds
+   const showSuccessDialog = () => {
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000); // Hide after 3 seconds
+  };
+
+  // Function to show error dialog for 3 seconds
+  const showErrorDialog = () => {
+    setShowError(true);
+    setTimeout(() => {
+      setShowError(false);
+    }, 3000); // Hide after 3 seconds
+  };
 
   const token = Cookies.get('token');
 
@@ -65,6 +86,7 @@ function Users() {
         setEmail('');
         setRole('');
 
+        showSuccessDialog();
         
       }else{
           //pass error message
@@ -74,6 +96,8 @@ function Users() {
 
           setEmail('');
           setRole('');
+
+          showErrorDialog();
       }
 
       // Redirect or handle success based on the response
@@ -85,6 +109,8 @@ function Users() {
       
       setEmail('');
       setRole('');
+
+      showErrorDialog();
     } finally{
       setLoading(false);
     }
@@ -126,16 +152,21 @@ function Users() {
       if (response.status === 200) {
         // Update the user list after successful deletion
         fetchUsers();
-        deletehandleClose()
+        deletehandleClose();
+        showSuccessDialog();
       } else {
        
         
-        deletehandleClose()
+        deletehandleClose();
+
+        showErrorDialog();
       }
     } catch (error) {
      
       console.log("delete failed" + error)
-      deletehandleClose()
+      deletehandleClose();
+
+      showErrorDialog();
     }
   };
 
@@ -163,13 +194,10 @@ function Users() {
     <>
     <Navbar />
     <div className="users p-4 mt-8 ml-64 body">
-      {showAlert && (
-          <Alert variant={alertVariant} onClose={() => setShowAlert(false)} dismissible>
-            {alertMessage}
-          </Alert>
-        )}
-   
-   
+
+        <InfoDialog  message={"success"} show={showSuccess} /> 
+        <ErrorDialog message={"something went wrong, please check your connection and try again"} show={showError} /> 
+      
         <Modal show={deleteshow} onHide={deletehandleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Confirm Delete</Modal.Title>
@@ -187,9 +215,7 @@ function Users() {
 
           </Modal.Footer>
         </Modal>
-        <h3>Users</h3>
        
-
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

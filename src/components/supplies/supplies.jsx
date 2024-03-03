@@ -6,6 +6,8 @@ import { BASE_URL } from '../constants/constants';
 import Alert from 'react-bootstrap/Alert';
 import { Modal } from 'react-bootstrap';
 import Paginator from '../Paginator/paginator';
+import InfoDialog from '../Dialogs/infoDialog';
+import ErrorDialog from '../Dialogs/errorDialog';
 
 const Supplies = () => {
   const navigate = useNavigate();
@@ -24,6 +26,25 @@ const Supplies = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+   // Function to show success dialog for 3 seconds
+   const showSuccessDialog = () => {
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000); // Hide after 3 seconds
+  };
+
+  // Function to show error dialog for 3 seconds
+  const showErrorDialog = () => {
+    setShowError(true);
+    setTimeout(() => {
+      setShowError(false);
+    }, 3000); // Hide after 3 seconds
+  };
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -79,6 +100,8 @@ const Supplies = () => {
 
         fetchSupplies();
         handleClose();
+
+        showSuccessDialog();
       } else {
         setName('');
         setQuantity('');
@@ -87,6 +110,8 @@ const Supplies = () => {
         setFileName('');
         
         handleClose();
+
+        showErrorDialog();
       }
     } catch (error) {
       console.error('Error creating supply:', error);
@@ -96,6 +121,8 @@ const Supplies = () => {
       setFile('');
       setFileName('');
       handleClose();
+
+      showErrorDialog();
     } finally {
       setLoading(false);
     }
@@ -112,6 +139,8 @@ const Supplies = () => {
 
   return (
     <div className="p-4 mt-10 ml-64 body">
+        <InfoDialog  message={"success"} show={showSuccess} /> 
+        <ErrorDialog message={"something went wrong, please check your connection and try again"} show={showError} /> 
       <button onClick={handleShow} className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
         Add Supply
       </button>
