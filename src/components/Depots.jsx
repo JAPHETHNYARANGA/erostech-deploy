@@ -89,7 +89,7 @@ const Depots = () => {
   const handleMovementClose = () => setMovementShow(false);
 
   const handleMovementShow = (fuelTypeId) => {
-    setMovementDepoId(fuelTypeId); // Set the selected fuel type when the button is clicked
+    setMovementDepoId(fuelTypeId); 
     setMovementShow(true);
   };
 
@@ -112,8 +112,6 @@ const Depots = () => {
         }
       });
       
-
-     
       if(response.data.success){
         setMovementDepoId('');
         setEntryNumber('');
@@ -134,7 +132,6 @@ const Depots = () => {
         setEntryDate('');
         setMovementFuelType('');
 
-        
         handleMovementClose()
       }
 
@@ -147,8 +144,7 @@ const Depots = () => {
         setEntryDate('');
         setMovementFuelType('');
 
-      
-      handleMovementClose()
+        handleMovementClose()
   
     }finally{
       setLoading(false);
@@ -160,7 +156,6 @@ const Depots = () => {
     fetchDepots();
     fetchFuelTypes();
     fetchBalances();
-    console.log("token is" + token)
    }, []);
    
 
@@ -194,7 +189,6 @@ const Depots = () => {
     .then((response) => response.json())
     .then((data) => {
       setFuelTypes(data.fuel);
-      console.log("fuel types is " + data.fuel)
     })
     .catch((error) => console.error('Error fetching fuel types:', error));
    }
@@ -208,7 +202,6 @@ const Depots = () => {
     .then((response) => response.json())
     .then((data) => {
       setAllBalances(data.balance );
-     console.log("Fuel balances:", data);
     })
     .catch((error) => {
       setError('Error fetching balances. Please try again.');
@@ -295,12 +288,22 @@ const Depots = () => {
           <td>{petrolQuantity}</td>
           <td>{dieselQuantity}</td>
           <td>{keroseneQuantity}</td>
+          
+          {station.mainline === 1 && ( 
           <td>
             <i
               className="fa-solid fa-gas-pump"
               onClick={() => handleShow(station.id)}
             ></i>
           </td>
+        )}
+
+        {station.mainline === 0 && ( 
+          <td>
+            <i class="fa fa-ban" aria-hidden="true"></i>
+          </td>
+        )}
+            
           <td>
             <i
               className="fa-solid fa-gear"
