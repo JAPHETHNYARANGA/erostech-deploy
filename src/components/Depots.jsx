@@ -117,11 +117,19 @@ const Depots = () => {
   const [MovementShow, setMovementShow] = useState(false);
   const handleMovementClose = () => setMovementShow(false);
 
+  const [MovementShowMain, setMovementShowmain] = useState(false);
+  const handleMovementCloseMain = () => setMovementShowmain(false);
+
 
 
   const handleMovementShow = (fuelTypeId) => {
     setMovementDepoId(fuelTypeId); 
     setMovementShow(true);
+  };
+
+  const handleMovementShowMain = (fuelTypeId) => {
+    setMovementDepoId(fuelTypeId); 
+    setMovementShowmain(true);
   };
 
 
@@ -154,6 +162,7 @@ const Depots = () => {
 
         fetchBalances()
         handleMovementClose()
+        handleMovementCloseMain()
 
         showSuccessDialog();
       }else{
@@ -166,6 +175,7 @@ const Depots = () => {
         setMovementFuelType('');
 
         handleMovementClose();
+        handleMovementCloseMain();
 
         showErrorDialog();
       }
@@ -180,6 +190,7 @@ const Depots = () => {
         setMovementFuelType('');
 
         handleMovementClose();
+        handleMovementCloseMain();
 
         showErrorDialog();
   
@@ -313,12 +324,23 @@ const Depots = () => {
           </td>
         )}
             
+        {station.mainline === 1 &&(
           <td>
-            <i
-              className="fa-solid fa-gear"
-              onClick={() => handleMovementShow(station.id)}
-            ></i>
-          </td>
+          <i
+            className="fa-solid fa-gear"
+            onClick={() => handleMovementShowMain(station.id)}
+          ></i>
+        </td>
+        )}    
+        {station.mainline === 0 &&(
+          <td>
+          <i
+            className="fa-solid fa-gear"
+            onClick={() => handleMovementShow(station.id)}
+          ></i>
+        </td>
+        )}   
+          
         </tr>
       );
     })}
@@ -327,6 +349,7 @@ const Depots = () => {
     
       </table>
 
+      {/* setting balance modal */}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>CreateBalance</Modal.Title>
@@ -388,6 +411,7 @@ const Depots = () => {
       </Modal>
 
 
+       {/* fuel movement modal        */}
       <Modal show={MovementShow} onHide={handleMovementClose}>
         <Modal.Header closeButton>
           <Modal.Title>Movement Of Fuel</Modal.Title>
@@ -451,7 +475,148 @@ const Depots = () => {
                   <option value="0">Fuel From Depot</option>
                  
                 </select>
+                {/* from depo */}
+                {entry === "1" && ( // Render the select element only when entry is "1" (Fuel To Depot)
+                  <div className="mb-4">
+                    <label htmlFor="password" className="block font-medium mb-1">
+                      Fuel Depo
+                    </label>
+                    <select
+                      id="countries"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    >
+                      <option>Select Fuel Depo</option>
+                      <option value="6">KPC DEPOT NAKURU</option>
+                      <option value="7">KPC DEPOT ELDORET</option>
+                      <option value="8">KPC DEPOT KISUMU</option>
+                    </select>
+                  </div>
+                )}
 
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="password" className="block font-medium mb-1">
+                  Fuel Type
+                </label>
+                <select
+                    id="countries"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={movement_fuel_type}
+                    onChange={(e) => setMovementFuelType(e.target.value)}
+                  >
+                 <option selected>Select Fuel Type</option>
+                  <option value="1">Super</option>
+                  <option value="2">Diesel</option>
+                  <option value="3">Kerosene</option>
+                 
+                </select>
+
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="email" className="block font-medium mb-1">
+                  Entry Date
+                </label>
+                <input
+                  type="date"
+                  id="date"
+                  className="w-full border rounded-lg py-2 px-3"
+                  value={entryDate}
+                  onChange={(e) => setEntryDate(e.target.value)}
+                  required
+                />
+              </div>
+
+              
+              {loading ? (
+                <div className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+                >
+                  Move
+                </button>
+              )}
+            </form>
+          </div>
+        </div>
+          </Modal.Body>
+      
+      </Modal>
+
+
+
+        {/* fuel movement modal        */}
+        <Modal show={MovementShowMain} onHide={handleMovementCloseMain}>
+        <Modal.Header closeButton>
+          <Modal.Title>Movement Of Fuel</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div className="flex items-center justify-center ">
+          <div className="p-6 max-w-md w-full bg-white shadow-lg rounded-lg">
+            
+            <form onSubmit={createFuelMovement}>
+            <div className="mb-4">
+                <label htmlFor="email" className="block font-medium mb-1">
+                  Entry Number
+                </label>
+                <input
+                  type="text"
+                  id="entryNumber"
+                  className="w-full border rounded-lg py-2 px-3"
+                  value={entryNumber}
+                  onChange={(e) => setEntryNumber(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block font-medium mb-1">
+                  Vessel
+                </label>
+                <input
+                  type="text"
+                  id="vessel"
+                  className="w-full border rounded-lg py-2 px-3"
+                  value={vessel}
+                  onChange={(e) => setVessel(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block font-medium mb-1">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  className="w-full border rounded-lg py-2 px-3"
+                  value={movementQuantity}
+                  onChange={(e) => setMovementQuantity(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="password" className="block font-medium mb-1">
+                  Fuel Movement Direction
+                </label>
+                <select
+                    id="countries"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={entry}
+                    onChange={(e) => setEntry(e.target.value)}
+                  >
+                  <option selected>Select Fuel Movement</option>
+                  <option value="1">Fuel To Depot</option>
+                  <option value="0">Fuel From Depot</option>
+                 
+                </select>
+              
               </div>
 
               <div className="mb-4">
