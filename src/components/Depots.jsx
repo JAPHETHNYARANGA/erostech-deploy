@@ -110,6 +110,7 @@ const Depots = () => {
   const [vessel, setVessel] = useState('');
   const [movementQuantity, setMovementQuantity ] = useState('');
   const [entry, setEntry ] =useState('');
+  const [mainEntry, setMainEntry ] =useState('');
   const [entryDate, setEntryDate ] = useState('');
   const [movement_fuel_type , setMovementFuelType] = useState('');
 
@@ -132,6 +133,72 @@ const Depots = () => {
     setMovementShowmain(true);
   };
 
+  const fuelMovementsMain = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const response = await axios.post(`${BASE_URL}/fuelMovementsMain`, {
+        entry_no: entryNumber,
+        depo_id: movement_depo_id,
+        fuel_type: movement_fuel_type,
+        entry_date: entryDate,
+        entry: entry,
+        mainline_id:mainEntry,
+        vessel: vessel,
+        quantity: movementQuantity,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if(response.data.success){
+        setMovementDepoId('');
+        setEntryNumber('');
+        setVessel('');
+        setMovementQuantity('');
+        setEntry('');
+        setEntryDate('');
+        setMovementFuelType('');
+
+        fetchBalances()
+        handleMovementClose()
+        handleMovementCloseMain()
+
+        showSuccessDialog();
+      }else{
+        setMovementDepoId('');
+        setEntryNumber('');
+        setVessel('');
+        setMovementQuantity('');
+        setEntry('');
+        setEntryDate('');
+        setMovementFuelType('');
+
+        handleMovementClose();
+        handleMovementCloseMain();
+
+        showErrorDialog();
+      }
+
+    } catch (error) {
+      setMovementDepoId('');
+        setEntryNumber('');
+        setVessel('');
+        setMovementQuantity('');
+        setEntry('');
+        setEntryDate('');
+        setMovementFuelType('');
+
+        handleMovementClose();
+        handleMovementCloseMain();
+
+        showErrorDialog();
+  
+    }finally{
+      setLoading(false);
+    }
+  };
 
   const createFuelMovement = async (event) => {
     event.preventDefault();
@@ -143,6 +210,7 @@ const Depots = () => {
         fuel_type: movement_fuel_type,
         entry_date: entryDate,
         entry: entry,
+        mainline_id:mainEntry,
         vessel: vessel,
         quantity: movementQuantity,
       }, {
@@ -484,6 +552,8 @@ const Depots = () => {
                     <select
                       id="countries"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      value={mainEntry}
+                      onChange={(e) => setMainEntry(e.target.value)}
                     >
                       <option>Select Fuel Depo</option>
                       <option value="6">KPC DEPOT NAKURU</option>
@@ -561,7 +631,7 @@ const Depots = () => {
         <div className="flex items-center justify-center ">
           <div className="p-6 max-w-md w-full bg-white shadow-lg rounded-lg">
             
-            <form onSubmit={createFuelMovement}>
+            <form onSubmit={fuelMovementsMain}>
             <div className="mb-4">
                 <label htmlFor="email" className="block font-medium mb-1">
                   Entry Number

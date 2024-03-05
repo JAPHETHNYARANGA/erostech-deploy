@@ -9,7 +9,7 @@ const PolarChart = () => {
     const data = {
       labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
       datasets: [{
-        label: 'My First Dataset',
+        label: 'Supplies',
         data: [11, 16, 7, 3, 14],
         backgroundColor: [
           'rgb(255, 99, 132)',
