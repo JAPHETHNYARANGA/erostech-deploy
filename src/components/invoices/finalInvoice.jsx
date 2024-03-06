@@ -180,7 +180,7 @@ function FinalInvoice() {
                   />
                 </div>
                 <div className="mb-4 col">
-                  <label htmlFor="number" className="block font-medium mb-1">Cost per Litre</label>
+                  <label htmlFor="number" className="block font-medium mb-1">Total Cost</label>
                   <input
                     type="number"
                     id="amount"

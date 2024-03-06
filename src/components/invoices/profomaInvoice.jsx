@@ -176,17 +176,6 @@ function ProfomaInvoice() {
                   />
                 </div>
                 <div className="mb-4 col">
-                  <label htmlFor="number" className="block font-medium mb-1">Cost per Litre</label>
-                  <input
-                    type="number"
-                    id="amount"
-                    className="w-full border rounded-lg py-2 px-3"
-                    value={item.amount}
-                    onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="mb-4 col">
                   <label htmlFor="number" className="block font-medium mb-1">Total Cost</label>
                   <input
                     type="number"
@@ -197,6 +186,17 @@ function ProfomaInvoice() {
                     required
                   />
                 </div>
+                {/* <div className="mb-4 col">
+                  <label htmlFor="number" className="block font-medium mb-1">Total Cost</label>
+                  <input
+                    type="number"
+                    id="amount"
+                    className="w-full border rounded-lg py-2 px-3"
+                    value={item.amount}
+                    onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
+                    required
+                  />
+                </div> */}
               </div>
               ))}
 
