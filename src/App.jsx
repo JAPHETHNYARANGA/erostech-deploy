@@ -45,6 +45,7 @@ import FinalInvoice from './components/invoices/finalInvoice';
 import GatePassForm from './components/gatepass/Gatepass';
 import AllGatePasses from './components/gatepass/AllGatePasses';
 import TransactonsHistory from './pages/Transactions/transactonsHistory';
+import GenerateLpo from './components/messaging/generateLpo';
 
 
 const App = () => {
@@ -263,6 +264,21 @@ const App = () => {
               />
             }
           />
+
+
+        <Route path="/generateLpo"
+            element={
+              <PrivateRoute
+                element={
+                  <React.Fragment>
+                    <NavBar />
+                    <GenerateLpo />
+                  </React.Fragment>
+                }
+              />
+            }
+          />
+
 
 
         </Routes>

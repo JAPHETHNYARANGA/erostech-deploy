@@ -1,113 +1,148 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BASE_URL } from '../constants/constants';
+import Cookies from 'js-cookie';
+import Paginator from '../Paginator/paginator';
+import { Link } from 'react-router-dom';
 
-const Messages = ({ onEditItem, cellData }) => {
+
+function messages() {
+  const [invoices, setInvoices] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [warning, setWarning] = useState(null);
+  const [itemsPerPage] = useState(10);
+
+  const [show, setShow] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
+  const token = Cookies.get('token');
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [currentPage]);
+
+  const fetchInvoices = () => {
+    axios.get(`${BASE_URL}/fetchLpo?page=${currentPage}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        const { invoice } = response.data;
+        setInvoices(invoice.data || []);
+        setCurrentPage(invoice.current_page); // Access the current_page property from invoice
+        setLastPage(invoice.last_page); // Access the last_page property from invoice
+      })
+      .catch(error => console.error('Error fetching invoices:', error));
+  };
+
+  const fetchInvoiceFile = (id) => {
+    axios.post(`${BASE_URL}/fetchLpoFile/${id}`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      responseType: 'blob' // Set the responseType to 'blob' to handle binary data
+    })
+    .then(response => {
+      // Create a Blob from the PDF data
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      // Create a URL for the Blob
+      const url = window.URL.createObjectURL(blob);
+      // Open the PDF file in a new tab
+      window.open(url);
+    })
+    .catch(error => console.error('Error fetching invoices:', error));
+  };
+  
+  
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-    
-    <form >
-            <div className="mb-4">
-              <p className='center'>Generate LPO</p>
-            <label htmlFor="email" className="block font-medium mb-1">Receiver Name</label>
-            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" 
-            // value={receiverName}
-              // onChange={(e) => setReceiverName(e.target.value)}
-              required  />
-            </div>
-            <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-1">Receiver Company</label>
-            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3"  
-            // value={receiverCompany}
-              // onChange={(e) => setReceiverCompany(e.target.value)}
-              required/>
-            </div>
-            <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-1">Receiver Address</label>
-            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3"  
-            // value={receiverAddress}
-              // onChange={(e) => setReceiverAddress(e.target.value)}
-              required/>
-            </div>
-            <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-1">Receiver Phone</label>
-            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" 
-            // value={receiverPhone}
-              // onChange={(e) => setReceiverPhone(e.target.value)}
-              required />
-            </div>
-            <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-1">Receiver Email</label>
-            <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" 
-            // value={receiverEmail}
-              // onChange={(e) => setReceiverEmail(e.target.value)}
-              required />
-            </div>
-            <div className="mb-3">
-            <label htmlFor="email" className="block font-medium mb-1">Invoice Due Date</label>
-            <input type="date" id="name" className="w-full border rounded-lg py-2 px-3" 
-            // value={dueDate}
-              // onChange={(e) => setDueDate(e.target.value)}
-              required />
-            </div>
+    <div className="relative overflow-x-auto shadow-md rounded-lg ml-64 mt-16">
+      <div className="pb-4 bg-white dark:bg-gray-900 flex justify-between items-center">
+        <div>
+          <label htmlFor="invoice-search" className="sr-only">Search</label>
+          <input
+            type="text"
+            id="invoice-search"
+            className="block p-2 pl-10 text-lg text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Search for invoices by invoice number"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        {warning && (
+          <div className="bg-red-200 text-red-800 p-2 mb-4 rounded-lg">
+            {warning}
+          </div>
+        )}
+        <Link to="/generateLpo">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center mr-10" >
+          <svg
+            className="w-5 h-5 mr-2 text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 18 18">
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2.2"
+              d="M9 1v16M1 9h16"/>
+          </svg>
+          Generate LPO
+        </button>
+        </Link>
+      </div>
+      <table className="w-full text-lg text-left text-gray-900 dark:text-gray-400 mt-4">
+        <thead className="text-md text-gray-900 uppercase bg-gray-50 dark:bg-gray-900 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="p-4">
+              LPO Number
+            </th>
+            <th scope="col" className="p-4">
+              Company
+            </th>
+         
+            <th scope="col" className="p-4">
+              Billing Date
+            </th>
+            <th scope="col" className="p-4">
+              Due Date
+            </th>
+            <th scope="col" className="p-4">
+              View
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {invoices.map(invoice => (
+            <tr key={invoice.id}>
+              <td className="p-4">{invoice.invoiceNumber}</td>
+              <td className="p-4">{invoice.ReceiverCompany}</td>
+              <td className="p-4">{invoice.invoiceDate}</td>
+              <td className="p-4">{invoice.dueDate}</td>
+              <td className="p-4" 
+              onClick={() => fetchInvoiceFile(invoice.id)}
+              ><i class="fa fa-eye" aria-hidden="true"></i></td>
+            </tr>
+          ))}
+        </tbody>
+        <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
+      </table>
+   
 
-            <h2 className='mb-3'>Items</h2>
-
-            
-              <div className="row items" >
-                <div className="mb-4 col">
-                  <label htmlFor="email" className="block font-medium mb-1">Item Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full border rounded-lg py-2 px-3"
-                    // value={item.itemName}
-                    // onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="mb-4 col">
-                  <label htmlFor="password" className="block font-medium mb-1">Quantity</label>
-                  <input
-                    type="number"
-                    id="quantity"
-                    className="w-full border rounded-lg py-2 px-3"
-                    // value={item.quantity}
-                    // onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="mb-4 col">
-                  <label htmlFor="number" className="block font-medium mb-1">Cost per Litre</label>
-                  <input
-                    type="number"
-                    id="amount"
-                    className="w-full border rounded-lg py-2 px-3"
-                    // value={item.amount}
-                    // onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              
-
-                <button className='btn btn-primary mb-2' >
-                  <i className="fa fa-plus" aria-hidden="true"></i>
-                </button>
-
-                <button className='btn btn-primary mb-2 ml-2'>
-                  <i className="fa-solid fa-minus"></i>
-                </button>
-
-            
-                  <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-                  >
-                    Create
-              </button>
-                
-        </form>
     </div>
   );
-};
+}
 
-export default Messages;
+export default messages;

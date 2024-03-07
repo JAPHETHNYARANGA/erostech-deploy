@@ -3,7 +3,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie'; 
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
-import Alert from 'react-bootstrap/Alert';
 import { Modal } from 'react-bootstrap';
 import Paginator from '../Paginator/paginator';
 import InfoDialog from '../Dialogs/infoDialog';
