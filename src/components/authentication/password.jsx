@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import axios from 'axios';
 
@@ -13,10 +13,13 @@ const Password = () => {
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassowrd, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(`${BASE_URL}/set-password/${croppedToken}`, {
         firstName: firstName,
@@ -27,8 +30,7 @@ const Password = () => {
       // Assuming the response contains a token or user data
       console.log(response.data);
       if(response.status){
-       
-        Navigate('/');
+        navigate('/');
       }else{
 
       }
@@ -38,6 +40,8 @@ const Password = () => {
     } catch (error) {
       console.error('Register failed:', error.message);
       console.log("the token is"+ croppedToken)
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -100,12 +104,21 @@ const Password = () => {
               required
           />
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-        >
-          Submit
-        </button>
+       
+        {loading ? (
+            <div className="text-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            >
+              Set Password
+            </button>
+          )}
       </form>
     </div>
   </div>

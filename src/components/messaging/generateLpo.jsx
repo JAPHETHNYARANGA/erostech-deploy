@@ -56,6 +56,7 @@ function GenerateLpo() {
     const handleSubmit = async (event) => {
       event.preventDefault();
       setLoading(true);
+      console.log('Items:', items); // Log the items data
       try {
           // Include the items array in the request payload
           const response = await axios.post(

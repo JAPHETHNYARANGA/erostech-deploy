@@ -7,7 +7,7 @@ const PolarChart = () => {
   useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
     const data = {
-      labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
+      labels: ['Invoices', 'users', 'fuel transactions', 'Gate passes', 'LPO'],
       datasets: [{
         label: 'Supplies',
         data: [11, 16, 7, 3, 14],

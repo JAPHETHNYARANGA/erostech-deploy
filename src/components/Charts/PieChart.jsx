@@ -1,20 +1,40 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import { BASE_URL } from '../constants/constants';
+import Cookies from 'js-cookie';
+
+
+
 
 const PieChart = () => {
   const chartRef = useRef(null);
+  const token = Cookies.get('token');
+
+
+  const fetchTransactions = () => {
+    fetch(`${BASE_URL}/pieChartData`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log('data is' + data)
+      })
+      .catch((error) => console.error('Error fetching pie chart:', error));
+  };
 
   useEffect(() => {
+    fetchTransactions();
     const ctx = chartRef.current.getContext('2d');
     const data = {
-      labels: ['Red', 'Blue', 'Yellow'],
+      labels: ['Fuel Into depo', 'Fuel Out Of Depos'],
       datasets: [{
         label: 'My First Dataset',
-        data: [300, 50, 100],
+        data: [300, 50],
         backgroundColor: [
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)'
         ],
         hoverOffset: 4
       }]

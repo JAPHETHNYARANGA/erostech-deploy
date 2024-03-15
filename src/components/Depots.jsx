@@ -218,6 +218,8 @@ const Depots = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+
+      
       
       if(response.data.success){
         setMovementDepoId('');
@@ -634,7 +636,7 @@ const Depots = () => {
             <form onSubmit={fuelMovementsMain}>
             <div className="mb-4">
                 <label htmlFor="email" className="block font-medium mb-1">
-                  Entry Number
+                  Entry Number 
                 </label>
                 <input
                   type="text"
