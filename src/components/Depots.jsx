@@ -321,6 +321,7 @@ const Depots = () => {
     .then((response) => response.json())
     .then((data) => {
       setAllBalances(data.balance );
+      console.log("balances is " +data)
     })
     .catch((error) => {
       setError('Error fetching balances. Please try again.');
@@ -362,7 +363,7 @@ const Depots = () => {
       {stations.map((station, index) => {
       // Find the corresponding balance for this station
       const stationBalance = allBalances.find(
-        (balance) => balance.depo_id === station.id
+        (balance) => balance.depo_id == station.id
       );
 
       // Extract the quantities for each fuel type
@@ -379,7 +380,7 @@ const Depots = () => {
           <td>{dieselQuantity}</td>
           <td>{keroseneQuantity}</td>
           
-          {station.mainline === 1 && ( 
+          {station.mainline == 1 && ( 
           <td>
             <i
               className="fa-solid fa-gas-pump"
@@ -388,13 +389,13 @@ const Depots = () => {
           </td>
         )}
 
-        {station.mainline === 0 && ( 
+        {station.mainline == 0 && ( 
           <td>
             <i class="fa fa-ban" aria-hidden="true"></i>
           </td>
         )}
             
-        {station.mainline === 1 &&(
+        {station.mainline == 1 &&(
           <td>
           <i
             className="fa-solid fa-gear"
@@ -402,7 +403,7 @@ const Depots = () => {
           ></i>
         </td>
         )}    
-        {station.mainline === 0 &&(
+        {station.mainline == 0 &&(
           <td>
           <i
             className="fa-solid fa-gear"
@@ -546,7 +547,7 @@ const Depots = () => {
                  
                 </select>
                 {/* from depo */}
-                {entry === "1" && ( // Render the select element only when entry is "1" (Fuel To Depot)
+                {entry == "1" && ( // Render the select element only when entry is "1" (Fuel To Depot)
                   <div className="mb-4">
                     <label htmlFor="password" className="block font-medium mb-1">
                       Fuel Depo
