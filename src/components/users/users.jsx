@@ -296,9 +296,9 @@ function Users() {
         </tr>
       </thead>
       <tbody>
-          {allUsers.map((user) => (
+          {allUsers.map((user, index) => (
             <tr key={user.id}>
-              <th scope="row">{user.id}</th>
+              <th scope="row">{index + 1}</th>
               <td>{user.firstName || 'N/A'}</td>
               <td>{user.lastName || 'N/A'}</td>
               <td>{user.email}</td>
