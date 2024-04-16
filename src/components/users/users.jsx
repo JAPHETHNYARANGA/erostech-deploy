@@ -172,13 +172,13 @@ function Users() {
 
     const getRoleText = (roleValue) => {
       switch (roleValue) {
-        case 1:
+        case '1':
           return 'Admin';
-        case 2:
+        case '2':
           return 'Manager';
-        case 3:
+        case '3':
           return 'Finance';
-        case 4:
+        case '4':
           return 'User';
         default:
           return 'N/A';
