@@ -38,8 +38,8 @@ const Password = () => {
       // Redirect or handle success based on the response
       // navigate('/dashboard'); 
     } catch (error) {
-      console.error('Register failed:', error.message);
-      console.log("the token is"+ croppedToken)
+      console.error('Set password failed:', error.response.data.message);
+      console.log("the token is" + croppedToken)
     }finally{
       setLoading(false);
     }
