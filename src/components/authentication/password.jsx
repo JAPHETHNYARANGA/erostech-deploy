@@ -7,7 +7,7 @@ import axios from 'axios';
 const Password = () => {
 
   const { token } = useParams();
-  const croppedToken = token.substring(2);
+  const croppedToken = token;
  
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
