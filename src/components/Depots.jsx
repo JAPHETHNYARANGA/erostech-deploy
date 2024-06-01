@@ -142,7 +142,7 @@ const Depots = () => {
         depo_id: movement_depo_id,
         fuel_type: movement_fuel_type,
         entry_date: entryDate,
-        entry: entry,
+        entry: 1,
         mainline_id:mainEntry,
         vessel: vessel,
         quantity: movementQuantity,
@@ -209,7 +209,7 @@ const Depots = () => {
         depo_id: movement_depo_id,
         fuel_type: movement_fuel_type,
         entry_date: entryDate,
-        entry: entry,
+        entry: 1,
         mainline_id:mainEntry,
         vessel: vessel,
         quantity: movementQuantity,
@@ -356,7 +356,7 @@ const Depots = () => {
           <th scope="col">Diesel</th>
           <th scope="col">Kerosene</th>
           <th scope="col">Set Balance</th>
-          <th scope="col">Fuel In/Out</th>
+          <th scope="col">Fuel In</th>
         </tr>
       </thead>
       <tbody>
@@ -533,43 +533,6 @@ const Depots = () => {
               </div>
               <div className="mb-4">
                 <label htmlFor="password" className="block font-medium mb-1">
-                  Fuel Movement Direction
-                </label>
-                <select
-                    id="countries"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    value={entry}
-                    onChange={(e) => setEntry(e.target.value)}
-                  >
-                  <option selected>Select Fuel Movement</option>
-                  <option value="1">Fuel To Depot</option>
-                  <option value="0">Fuel From Depot</option>
-                 
-                </select>
-                {/* from depo */}
-                {entry == "1" && ( // Render the select element only when entry is "1" (Fuel To Depot)
-                  <div className="mb-4">
-                    <label htmlFor="password" className="block font-medium mb-1">
-                      Fuel Depo
-                    </label>
-                    <select
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      value={mainEntry}
-                      onChange={(e) => setMainEntry(e.target.value)}
-                    >
-                      <option>Select Fuel Depo</option>
-                      <option value="6">KPC DEPOT NAKURU</option>
-                      <option value="7">KPC DEPOT ELDORET</option>
-                      <option value="8">KPC DEPOT KISUMU</option>
-                    </select>
-                  </div>
-                )}
-
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="password" className="block font-medium mb-1">
                   Fuel Type
                 </label>
                 <select
@@ -673,23 +636,6 @@ const Depots = () => {
                   onChange={(e) => setMovementQuantity(e.target.value)}
                   required
                 />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="password" className="block font-medium mb-1">
-                  Fuel Movement Direction
-                </label>
-                <select
-                    id="countries"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    value={entry}
-                    onChange={(e) => setEntry(e.target.value)}
-                  >
-                  <option selected>Select Fuel Movement</option>
-                  <option value="1">Fuel To Depot</option>
-                  <option value="0">Fuel From Depot</option>
-                 
-                </select>
-              
               </div>
 
               <div className="mb-4">
