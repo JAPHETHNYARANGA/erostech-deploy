@@ -23,6 +23,7 @@ import PaymentReceived from './components/sales/PaymentReceived';
 import LoadAuthority from './components/sales/LoadAuthority';
 import Settings from './components/Settings';
 import Invoices from './components/invoices/Invoices';
+import Reports from './components/reports/reports';
 
 
 
@@ -279,6 +280,18 @@ const App = () => {
             }
           />
 
+        <Route path="/reports"
+            element={
+              <PrivateRoute
+                element={
+                  <React.Fragment>
+                    <NavBar />
+                    <Reports />
+                  </React.Fragment>
+                }
+              />
+            }
+          />
 
 
         </Routes>

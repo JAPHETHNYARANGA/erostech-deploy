@@ -125,6 +125,9 @@ function Invoices() {
               Due Date
             </th>
             <th scope="col" className="p-4">
+              Status
+            </th>
+            <th scope="col" className="p-4">
               View
             </th>
           </tr>
@@ -136,6 +139,7 @@ function Invoices() {
               <td className="p-4">{invoice.ReceiverCompany}</td>
               <td className="p-4">{invoice.invoiceDate}</td>
               <td className="p-4">{invoice.dueDate}</td>
+              <td className="p-4">pending</td>
               <td className="p-4" 
               onClick={() => fetchInvoiceFile(invoice.id)}
               ><i class="fa fa-eye" aria-hidden="true"></i></td>

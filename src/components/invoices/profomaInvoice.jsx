@@ -17,7 +17,7 @@ function ProfomaInvoice() {
     const [itemName, setItemName] = useState('');
     const [quantity, setQuantity] = useState('');
     const [amount, setAmount] = useState('');
-    const [items, setItems] = useState([{ itemName: '', quantity: '', amount: '' }]);
+    const [items, setItems] = useState([{ itemName: '', quantity: '', unit_amount:'' , amount: '' }]);
 
     const token = Cookies.get('token');
 
@@ -41,7 +41,7 @@ function ProfomaInvoice() {
     };
 
     const handleAddItem = () => {
-      setItems([...items, { itemName: '', quantity: '', amount: '' }]);
+      setItems([...items, { itemName: '', quantity: '', unit_amount:'', amount: '' }]);
     };
 
     const handleRemoveItem = () => {
@@ -155,14 +155,19 @@ function ProfomaInvoice() {
               <div className="row items" key={index}>
                 <div className="mb-4 col">
                   <label htmlFor="email" className="block font-medium mb-1">Item Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full border rounded-lg py-2 px-3"
-                    value={item.itemName}
-                    onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
-                    required
-                  />
+                  <select
+                      id="itemName"
+                      className="w-full border rounded-lg py-2 px-3"
+                      value={item.itemName}
+                      onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
+                      required
+                    >
+                      <option value="">Select Item Name</option>
+                      <option value="petrol">Petrol</option>
+                      <option value="diesel">Diesel</option>
+                      <option value="kerosene">Kerosene</option>
+                    </select>
+
                 </div>
                 <div className="mb-4 col">
                   <label htmlFor="password" className="block font-medium mb-1">Quantity</label>
@@ -172,6 +177,17 @@ function ProfomaInvoice() {
                     className="w-full border rounded-lg py-2 px-3"
                     value={item.quantity}
                     onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-4 col">
+                  <label htmlFor="number" className="block font-medium mb-1">Cost per unit</label>
+                  <input
+                    type="number"
+                    id="amount"
+                    className="w-full border rounded-lg py-2 px-3"
+                    value={item.unit_amount}
+                    onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
                     required
                   />
                 </div>

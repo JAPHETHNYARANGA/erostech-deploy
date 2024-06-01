@@ -160,14 +160,19 @@ function GenerateLpo() {
               <div className="row items" key={index}>
                 <div className="mb-4 col">
                   <label htmlFor="email" className="block font-medium mb-1">Item Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full border rounded-lg py-2 px-3"
-                    value={item.itemName}
-                    onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
-                    required
-                  />
+                  <select
+                      id="itemName"
+                      className="w-full border rounded-lg py-2 px-3"
+                      value={item.itemName}
+                      onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
+                      required
+                    >
+                      <option value="">Select Item Name</option>
+                      <option value="petrol">Petrol</option>
+                      <option value="diesel">Diesel</option>
+                      <option value="kerosene">Kerosene</option>
+                    </select>
+
                 </div>
                 <div className="mb-4 col">
                   <label htmlFor="password" className="block font-medium mb-1">Quantity</label>
