@@ -6,8 +6,8 @@ import Cookies from 'js-cookie';
 import InfoDialog from '../Dialogs/infoDialog';
 import ErrorDialog from '../Dialogs/errorDialog';
 
-
 function FinalInvoice() {
+    const [stations, setStations] = useState([]);
     const [receiverName, setReceiverName] = useState('');
     const [receiverCompany, setReceiverCompany] = useState('');
     const [receiverAddress, setReceiverAddress] = useState('');
@@ -20,87 +20,103 @@ function FinalInvoice() {
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false); 
     const [items, setItems] = useState([{ itemName: '', quantity: '', unit_amount:'',amount: '' }]);
+    const [selectedDepot, setSelectedDepot] = useState('');
 
     const token = Cookies.get('token');
 
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
 
-   // Function to show success dialog for 3 seconds
+    const navigate = useNavigate();
+
     const showSuccessDialog = () => {
-      setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000); // Hide after 3 seconds
+        setShowSuccess(true);
+        setTimeout(() => {
+            setShowSuccess(false);
+        }, 3000);
     };
 
-    // Function to show error dialog for 3 seconds
+    useEffect(() => {
+        fetchDepots();
+    }, []);
+
+    const fetchDepots = () => {
+        fetch(`${BASE_URL}/fuelDepots`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setStations(data.station);
+            })
+            .catch((error) => {
+                console.error('Error fetching stations:', error);
+            });
+    }
+
     const showErrorDialog = () => {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 3000); // Hide after 3 seconds
+        setShowError(true);
+        setTimeout(() => {
+            setShowError(false);
+        }, 3000);
     };
 
     const handleAddItem = () => {
-      setItems([...items, { itemName: '',actual_quantity:'', quantity: '', unit_amount:'', amount: '' }]);
+        setItems([...items, { itemName: '',actual_quantity:'', quantity: '', unit_amount:'', amount: '' }]);
     };
 
     const handleRemoveItem = () => {
-      setItems(prevItems => prevItems.length >  1 ? prevItems.slice(0, -1) : []);
+        setItems(prevItems => prevItems.length >  1 ? prevItems.slice(0, -1) : []);
     };
 
-    
-
-    const navigate = useNavigate();
-
     const handleSubmit = async (event) => {
-      event.preventDefault();
-      setLoading(true);
-      try {
-          // Include the items array in the request payload
-          const response = await axios.post(
-            `${BASE_URL}/generateInvoice`,
-            {
-              receiverName: receiverName,
-              receiverCompany: receiverCompany,
-              receiverAddress: receiverAddress,
-              receiverPhone: receiverPhone,
-              recipient_email: receiverEmail,
-              dueDate: dueDate,
-              items: items // Pass the entire items array
-            },
-            {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
+        event.preventDefault();
+        setLoading(true);
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/generateInvoice`,
+                {
+                    receiverName: receiverName,
+                    receiverCompany: receiverCompany,
+                    receiverAddress: receiverAddress,
+                    receiverPhone: receiverPhone,
+                    recipient_email: receiverEmail,
+                    dueDate: dueDate,
+                    depotId: selectedDepot,
+                    items: items
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );  
+            if(response.data.success){
+                showSuccessDialog();
+                navigate('/invoices');  
+            } else {
+                showErrorDialog();
+                
             }
-          );  
-          // Handle the response from the server
-          if(response.data.success){
-              showSuccessDialog();
-              navigate('/invoices');  
-          } else {
-              // Handle error message or status
-              showErrorDialog();
-          }
-      } catch (error) {
-          console.error('invoice creation failed:', error.message);
-          showErrorDialog();
-      } finally {
-          setLoading(false);
-      }
-  };
-  
-     
-      
-      const handleItemChange = (index, property, value) => {
+        } catch (error) {
+            console.error('invoice creation failed:', error);
+            showErrorDialog();
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleItemChange = (index, property, value) => {
         const newItems = [...items];
         newItems[index][property] = value;
         setItems(newItems);
-      };
-      
-
+    };
   return (
     <div className="p-4 mt-8 ml-64 body">
         <h3>Invoice</h3>
@@ -154,6 +170,23 @@ function FinalInvoice() {
             </select>
             </div>
 
+            <div className="mb-4">
+            <label for="cars" className="block font-medium mb-1">Depot Name</label>
+            <select
+                className="w-full border rounded-lg py-2 px-3"
+                name="cars"
+                id="cars"
+                value={selectedDepot}
+                onChange={(e) => setSelectedDepot(e.target.value)}
+                required
+            >
+                <option value="">Select Depot</option>
+                {stations.slice(0, -3).map((station, index) => (
+                    <option key={index} value={station.id}>{station.name}</option>
+                ))}
+            </select>
+
+            </div>
             <h2 className='mb-3'>Items</h2>
 
             {items.map((item, index) => (

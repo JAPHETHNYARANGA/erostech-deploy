@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import Cookies from 'js-cookie';
 import Paginator from '../Paginator/paginator';
-import { data } from 'autoprefixer';
 
 function Invoices() {
   const [invoices, setInvoices] = useState([]);
@@ -62,13 +61,36 @@ function Invoices() {
     .catch(error => console.error('Error fetching invoices:', error));
   };
   
-  
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  const handleApproval = (invoice) => {
+    const confirmed = window.confirm('Are you sure you want to approve this invoice?');
+    if (confirmed) {
+      // Call the API to update the approval status
+      // For example:
+      axios.patch(
+        `${BASE_URL}/invoices/${invoice.id}`,
+        {}, // Empty data object
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        }
+      )
+      .then(response => {
+        fetchInvoices();
+      })
+      .catch(error => {
+        console.log(error);
+        console.log(token);
+      });
+    }
+  };
+  
 
   return (
     <div className="relative overflow-x-auto shadow-md rounded-lg ml-64 mt-16">
@@ -139,10 +161,31 @@ function Invoices() {
               <td className="p-4">{invoice.ReceiverCompany}</td>
               <td className="p-4">{invoice.invoiceDate}</td>
               <td className="p-4">{invoice.dueDate}</td>
-              <td className="p-4">pending</td>
-              <td className="p-4" 
-              onClick={() => fetchInvoiceFile(invoice.id)}
-              ><i class="fa fa-eye" aria-hidden="true"></i></td>
+              <td className="p-4">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id={`flexCheckDefault-${invoice.id}`}
+                    checked={invoice.Approved === 1}
+                    disabled={invoice.Approved === 1}
+                    onChange={() => handleApproval(invoice)}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={`flexCheckDefault-${invoice.id}`}
+                  >
+                    Approved
+                  </label>
+                </div>
+              </td>
+              <td
+                className="p-4"
+                onClick={() => fetchInvoiceFile(invoice.id)}
+              >
+                <i className="fa fa-eye" aria-hidden="true"></i>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -163,18 +206,17 @@ function Invoices() {
                   <Link to="/final-invoice">Generate Invoice</Link>
                 </button>
               </div>
-              <div className="col">
+              {/* <div className="col">
                 <button 
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center mr-10"
                 >
                   <Link to="/profoma-invoice">Generate Proforma Invoice</Link>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </Modal.Body>
       </Modal>
-
     </div>
   );
 }

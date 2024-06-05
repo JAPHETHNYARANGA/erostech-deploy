@@ -8,6 +8,7 @@ import ErrorDialog from '../Dialogs/errorDialog';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+
 function Reports() {
   const [selectedOption, setSelectedOption] = useState('daily');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -25,6 +26,9 @@ function Reports() {
     setSelectedDate(date);
   };
 
+  const dateFormat = selectedOption === 'yearly'? 'yyyy' : (selectedOption === 'monthly'? 'MM/yyyy' : 'dd/MM/yyyy');
+  const formattedDate = selectedDate.toISOString().split('T')[0];
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -37,24 +41,35 @@ function Reports() {
         {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
+          },
+          responseType: 'blob' // Set response type to blob to handle PDF response
         }
       );
-
-      if (response.data.success) {
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-          navigate('/reports');
-        }, 3000);
+  
+      // Check if response content type is PDF
+      if (response.headers['content-type'] === 'application/pdf') {
+        // Handle PDF response
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(pdfBlob);
+        window.open(url);
       } else {
-        setShowError(true);
-        setTimeout(() => {
-          setShowError(false);
-        }, 3000);
+        // Handle JSON response
+        if (response.data.success) {
+          setShowSuccess(true);
+          console.log(response);
+          setTimeout(() => {
+            setShowSuccess(false);
+            navigate('/reports');
+          }, 3000);
+        } else {
+          setShowError(true);
+          setTimeout(() => {
+            setShowError(false);
+          }, 3000);
+        }
       }
     } catch (error) {
-      console.error('Error generating reports:', error.message);
+      console.error('Error generating reports:', error);
       setShowError(true);
       setTimeout(() => {
         setShowError(false);
@@ -63,6 +78,7 @@ function Reports() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="p-4 mt-8 ml-64 body">
