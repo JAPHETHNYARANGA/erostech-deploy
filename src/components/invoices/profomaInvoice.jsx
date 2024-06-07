@@ -53,37 +53,37 @@ function ProfomaInvoice() {
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        try {
-          const response = await axios.post(`${BASE_URL}/generateInvoice`, {
-            receiverName: receiverName,
-            receiverCompany: receiverCompany,
-            receiverAddress: receiverAddress,
-            receiverPhone: receiverPhone,
-            recipient_email: receiverEmail,
-            dueDate: dueDate,
-            items: items // Pass the entire items array
-          }, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          
-          if(response.data.success){
-            showSuccessDialog();
-            navigate('/invoices'); 
-          }else{
-            showErrorDialog();
+      event.preventDefault();
+      setLoading(true);
+      try {
+        const response = await axios.post(`${BASE_URL}/generateProfomaInvoice`, {
+          receiverName: receiverName,
+          receiverCompany: receiverCompany,
+          receiverAddress: receiverAddress,
+          receiverPhone: receiverPhone,
+          recipient_email: receiverEmail,
+          dueDate: dueDate,
+          items: items // Pass the entire items array
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
-        } catch (error) {
-          console.error('Login failed:', error.message);
+        });
+        
+        if (response.data.success) {
+          showSuccessDialog();
+          navigate('/invoices'); 
+        } else {
           showErrorDialog();
-      
-        }finally{
-          setLoading(false);
         }
-      };
+      } catch (error) {
+        console.error('Invoice creation failed:', error);
+        showErrorDialog();
+      } finally {
+        setLoading(false);
+      }
+    };
+    
 
       const handleItemChange = (index, property, value) => {
         const newItems = [...items];
@@ -163,7 +163,7 @@ function ProfomaInvoice() {
                       required
                     >
                       <option value="">Select Item Name</option>
-                      <option value="petrol">Petrol</option>
+                      <option value="super">Super</option>
                       <option value="diesel">Diesel</option>
                       <option value="kerosene">Kerosene</option>
                     </select>
@@ -180,17 +180,19 @@ function ProfomaInvoice() {
                     required
                   />
                 </div>
+
                 <div className="mb-4 col">
-                  <label htmlFor="number" className="block font-medium mb-1">Cost per unit</label>
+                  <label htmlFor="number" className="block font-medium mb-1">Unit Amount</label>
                   <input
                     type="number"
                     id="amount"
                     className="w-full border rounded-lg py-2 px-3"
                     value={item.unit_amount}
-                    onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
+                    onChange={(e) => handleItemChange(index, 'unit_amount', e.target.value)}
                     required
                   />
                 </div>
+               
                 <div className="mb-4 col">
                   <label htmlFor="number" className="block font-medium mb-1">Total Cost</label>
                   <input
@@ -202,17 +204,7 @@ function ProfomaInvoice() {
                     required
                   />
                 </div>
-                {/* <div className="mb-4 col">
-                  <label htmlFor="number" className="block font-medium mb-1">Total Cost</label>
-                  <input
-                    type="number"
-                    id="amount"
-                    className="w-full border rounded-lg py-2 px-3"
-                    value={item.amount}
-                    onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
-                    required
-                  />
-                </div> */}
+                
               </div>
               ))}
 

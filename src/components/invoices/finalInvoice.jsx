@@ -200,7 +200,7 @@ function FinalInvoice() {
                       onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                       required>
                       <option value="">Select Item Name</option>
-                      <option value="petrol">Petrol</option>
+                      <option value="super">Super</option>
                       <option value="diesel">Diesel</option>
                       <option value="kerosene">Kerosene</option>
                     </select>

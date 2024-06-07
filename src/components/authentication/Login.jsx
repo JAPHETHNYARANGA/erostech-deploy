@@ -39,7 +39,7 @@ const Login = () => {
         setShowAlert(true);
       }
     } catch (error) {
-      console.error('Login failed:', error.message);
+      console.error('Login failed:', error);
       setAlertVariant('danger');
       setAlertMessage('Failed to login!');
       setShowAlert(true);

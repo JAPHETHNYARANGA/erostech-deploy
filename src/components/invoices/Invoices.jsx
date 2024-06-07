@@ -150,6 +150,9 @@ function Invoices() {
               Status
             </th>
             <th scope="col" className="p-4">
+              Type
+            </th>
+            <th scope="col" className="p-4">
               View
             </th>
           </tr>
@@ -162,6 +165,9 @@ function Invoices() {
               <td className="p-4">{invoice.invoiceDate}</td>
               <td className="p-4">{invoice.dueDate}</td>
               <td className="p-4">
+              {invoice.type == 'proformaInvoice' ? (
+                <i className="fas fa-ban text-red-500"></i>
+              ) : (
                 <div className="form-check">
                   <input
                     className="form-check-input"
@@ -179,7 +185,9 @@ function Invoices() {
                     Approved
                   </label>
                 </div>
-              </td>
+              )}
+            </td>
+              <td className="p-4">{invoice.type}</td>
               <td
                 className="p-4"
                 onClick={() => fetchInvoiceFile(invoice.id)}
@@ -206,13 +214,13 @@ function Invoices() {
                   <Link to="/final-invoice">Generate Invoice</Link>
                 </button>
               </div>
-              {/* <div className="col">
+              <div className="col">
                 <button 
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center mr-10"
                 >
                   <Link to="/profoma-invoice">Generate Proforma Invoice</Link>
                 </button>
-              </div> */}
+              </div>
             </div>
           </div>
         </Modal.Body>
