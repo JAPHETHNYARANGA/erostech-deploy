@@ -281,8 +281,8 @@ const Depots = () => {
    const fetchDepots = () => {
     fetch(`${BASE_URL}/fuelDepots`, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (!response.ok) {
@@ -291,12 +291,21 @@ const Depots = () => {
         return response.json();
       })
       .then((data) => {
-        setStations(data.station);
+        // Exclude the last depot from data
+        const depots = data.station.slice(0, -2); // Slice to exclude the last element
+        setStations(depots);
+
+        // Set the last depot as the main line
+        const lastDepot = data.station[data.station.length - 3];
+        if (lastDepot) {
+          setMainLine(lastDepot.name);
+        }
       })
       .catch((error) => {
-        console.error('Error fetching stations:', error);
+        console.error('Error fetching depots:', error);
       });
-  }
+  };
+  
   
    
    const fetchFuelTypes = () =>{
@@ -383,7 +392,7 @@ const Depots = () => {
           {station.mainline == 1 && ( 
           <td>
             <i
-              className="fa-solid fa-gas-pump"
+              className="fas fa-coins"
               onClick={() => handleShow(station.id)}
             ></i>
           </td>
@@ -398,15 +407,16 @@ const Depots = () => {
         {station.mainline == 1 &&(
           <td>
           <i
-            className="fa-solid fa-gear"
+            className="fa-solid fa-gas-pump"
             onClick={() => handleMovementShowMain(station.id)}
           ></i>
+          
         </td>
         )}    
         {station.mainline == 0 &&(
           <td>
           <i
-            className="fa-solid fa-gear"
+            className="fa-solid fa-gas-pump"
             onClick={() => handleMovementShow(station.id)}
           ></i>
         </td>

@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../constants/constants';
 import Alert from 'react-bootstrap/Alert';
 
+// Import the image correctly
+import logo from '../../assets/logo.png';
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -51,12 +54,16 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-6 max-w-md w-full bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+
+      <img src={logo} alt="Logo" className="mb-4" />
+      <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
         {showAlert && (
           <Alert variant={alertVariant} onClose={() => setShowAlert(false)} dismissible>
             {alertMessage}
           </Alert>
         )}
+        {/* Use the imported image */}
+        
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block font-medium mb-1">

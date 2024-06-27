@@ -24,20 +24,37 @@ const AllGatePasses = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("gate pass is", data);
-        setGatePasses(data.gatePass.data); // Access the 'data' array
+        setGatePasses(data.gatePass.data);
         setCurrentPage(data.gatePass.current_page); 
         setLastPage(data.gatePass.last_page);
       })
-      
       .catch((error) => {
         setError('Error fetching gate pass. Please try again.');
       });
   };
 
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleViewGatePass = async (gatePassId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/downloadGatePassPDF/${gatePassId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `gatepass_${gatePassId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading gate pass PDF:', error);
+    }
   };
 
   return (
@@ -56,7 +73,7 @@ const AllGatePasses = () => {
                 <p className="card-text">Destination: {gatePass.destination}</p>
                 <p className="card-text">Vehicle Details: {gatePass.vehicleDetails}</p>
                 <p className="card-text">Recipient Details: {gatePass.recipientEmail}</p>
-                <a href="#" className="btn btn-primary">View Gate Pass</a>
+                <button className="btn btn-primary" onClick={() => handleViewGatePass(gatePass.id)}>View Gate Pass</button>
               </div>
             </div>
           </div>
