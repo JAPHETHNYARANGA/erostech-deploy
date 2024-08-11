@@ -180,19 +180,19 @@ const Supplies = () => {
             <div className="p-6 max-w-md w-full bg-white shadow-lg rounded-lg">
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label htmlFor="email" className="block font-medium mb-1">Name</label>
+                  <label htmlFor="email" className="block font-medium mb-1">Name *</label>
                   <input type="text" id="name" className="w-full border rounded-lg py-2 px-3" value={name} onChange={(e) => setName(e.target.value)} required />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="password" className="block font-medium mb-1">Quantity</label>
+                  <label htmlFor="password" className="block font-medium mb-1">Quantity *</label>
                   <input type="number" id="quantity" className="w-full border rounded-lg py-2 px-3" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="number" className="block font-medium mb-1">Amount</label>
+                  <label htmlFor="number" className="block font-medium mb-1">Amount *</label>
                   <input type="number" id="amount" className="w-full border rounded-lg py-2 px-3" value={amount} onChange={(e) => setAmount(e.target.value)} required />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="file" className="block font-medium mb-1">File</label>
+                  <label htmlFor="file" className="block font-medium mb-1">File *</label>
                   <input type="file" id="file" className="w-full border rounded-lg py-2 px-3" onChange={handleFileChange} required/>
                   {fileName && <p>Selected File: {fileName}</p>}
                 </div>

@@ -228,7 +228,7 @@ function Users() {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="email" className="block font-medium mb-1">
-                  Email
+                  Email  *
                 </label>
                 <input
                   type="email"
@@ -241,7 +241,7 @@ function Users() {
               </div>
               <div className="mb-4">
                 <label htmlFor="password" className="block font-medium mb-1">
-                  Role
+                  Role  *
                 </label>
                 <select
                     id="countries"

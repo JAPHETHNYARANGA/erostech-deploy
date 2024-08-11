@@ -352,7 +352,7 @@ const Depots = () => {
    <Navbar />
    <div className="p-4 mt-8 ml-64 body">
         <InfoDialog  message={"success"} show={showSuccess} /> 
-        <ErrorDialog message={"something went wrong, please check your connection and try again"} show={showError} /> 
+        <ErrorDialog message={"something went wrong, Please check internet connection or ensure mainline has fuel"} show={showError} /> 
       <h2 className="text-2xl font-bold mb-4 title">Stations</h2>
 
       <table class="table">

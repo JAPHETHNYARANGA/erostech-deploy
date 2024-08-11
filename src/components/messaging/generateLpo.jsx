@@ -120,7 +120,7 @@ function GenerateLpo() {
               required/>
             </div>
             <div className="mb-4">
-            <label htmlFor="email" className="block font-medium mb-1">Receiver Address</label>
+            <label htmlFor="email" className="block font-medium mb-1">Receiver KRA Pin</label>
             <input type="text" id="name" className="w-full border rounded-lg py-2 px-3"  value={receiverAddress}
               onChange={(e) => setReceiverAddress(e.target.value)}
               required/>

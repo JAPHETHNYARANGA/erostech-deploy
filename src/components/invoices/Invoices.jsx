@@ -70,11 +70,36 @@ function Invoices() {
   const handleApproval = (invoice) => {
     const confirmed = window.confirm('Are you sure you want to approve this invoice?');
     if (confirmed) {
-      // Call the API to update the approval status
-      // For example:
+        axios.patch(
+            `${BASE_URL}/invoices/${invoice.id}`,
+            { approved: true }, // Send `approved: true` explicitly
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            }
+        )
+        .then(response => {
+            if (response.data.success) {
+                fetchInvoices();
+            } else {
+                alert(response.data.message); // Show error message
+            }
+        })
+        .catch(error => {
+            console.error('Error updating invoice:', error);
+            alert('An error occurred while updating the invoice. Please check your internet connection or the fuel amount in the depot.');
+        });
+    }
+};
+
+
+  const handleDisapproval = (invoice) => {
+    const confirmed = window.confirm('Are you sure you want to disapprove this invoice?');
+    if (confirmed) {
       axios.patch(
         `${BASE_URL}/invoices/${invoice.id}`,
-        {}, // Empty data object
+        { disapproved: !invoice.disapproved }, // Toggle disapproval status
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -82,11 +107,15 @@ function Invoices() {
         }
       )
       .then(response => {
-        fetchInvoices();
+        if (response.data.success) {
+          fetchInvoices();
+        } else {
+          alert(response.data.message); // Show error message
+        }
       })
       .catch(error => {
-        console.log(error);
-        console.log(token);
+        console.error('Error updating invoice:', error);
+        alert('An error occurred while updating the invoice. Please check your internet connection or the fuel amount in the depot.');
       });
     }
   };
@@ -139,7 +168,6 @@ function Invoices() {
             <th scope="col" className="p-4">
               Company
             </th>
-         
             <th scope="col" className="p-4">
               Billing Date
             </th>
@@ -157,7 +185,7 @@ function Invoices() {
             </th>
           </tr>
         </thead>
-        <tbody>
+          <tbody>
           {invoices.map(invoice => (
             <tr key={invoice.id}>
               <td className="p-4">{invoice.invoiceNumber}</td>
@@ -165,28 +193,43 @@ function Invoices() {
               <td className="p-4">{invoice.invoiceDate}</td>
               <td className="p-4">{invoice.dueDate}</td>
               <td className="p-4">
-              {invoice.type == 'proformaInvoice' ? (
-                <i className="fas fa-ban text-red-500"></i>
-              ) : (
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id={`flexCheckDefault-${invoice.id}`}
-                    checked={invoice.Approved === 1}
-                    disabled={invoice.Approved === 1}
-                    onChange={() => handleApproval(invoice)}
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor={`flexCheckDefault-${invoice.id}`}
-                  >
-                    Approved
-                  </label>
-                </div>
-              )}
-            </td>
+                {invoice.type === 'proformaInvoice' ? (
+                  <i className="fas fa-ban text-red-500"></i>
+                ) : (
+                  <div className="flex items-center">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={`approve-${invoice.id}`}
+                      checked={invoice.Approved === 1}
+                      disabled={invoice.Approved === 1 || invoice.disapproved === 1}
+                      
+                      onChange={() => handleApproval(invoice)}
+                    />
+                    <label
+                      className="ml-2 form-check-label"
+                      htmlFor={`approve-${invoice.id}`}
+                    >
+                      Approve
+                    </label>
+
+                    <input
+                      className="ml-4 form-check-input"
+                      type="checkbox"
+                      id={`disapprove-${invoice.id}`}
+                      checked={invoice.disapproved === 1}
+                      disabled={invoice.Approved === 1 || invoice.disapproved === 1}
+                      onChange={() => handleDisapproval(invoice)}
+                    />
+                    <label
+                      className="ml-2 form-check-label"
+                      htmlFor={`disapprove-${invoice.id}`}
+                    >
+                      Disapprove
+                    </label>
+                  </div>
+                )}
+              </td>
               <td className="p-4">{invoice.type}</td>
               <td
                 className="p-4"
@@ -196,7 +239,8 @@ function Invoices() {
               </td>
             </tr>
           ))}
-        </tbody>
+          </tbody>
+
         <Paginator currentPage={currentPage} lastPage={lastPage} onPageChange={handlePageChange} />
       </table>
       <Modal show={show} onHide={handleClose}>
